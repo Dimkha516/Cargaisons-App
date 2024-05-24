@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-hero{
+    background-image: url('/fond.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.9;
+}

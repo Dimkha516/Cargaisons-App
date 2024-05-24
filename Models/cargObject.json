@@ -1,0 +1,25 @@
+{
+  "cargaisons": [
+    {
+      "numero": 1,
+      "poids": 100,
+      "colis": [
+        {
+          "code": 32,
+          "type": "alimentaire",
+          "poids": 10,
+          "prix": 10000,
+          "expediteur": "Demba Sow",
+          "destinataire": "Salimata Sow"
+        }
+      ],
+      "type": "Maritime",
+      "prix": 100000,
+      "lieu_depart": "Dakar",
+      "destination": "Bamako",
+      "distance": 1500,
+      "progression": "En cours",
+      "etat": "ferme"
+    }
+  ]
+}
