@@ -8,3 +8,10 @@
     background-position: center;
     opacity: 0.9;
 }
+
+.poidsError, .typeError, .startZoneError, .endZoneError{
+    display: none;
+    color: tomato;
+    font-weight: 900;
+    font-size: 1.3rem;
+}
