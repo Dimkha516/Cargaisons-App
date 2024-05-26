@@ -9,9 +9,9 @@
     opacity: 0.9;
 }
 
-.poidsError, .typeError, .startZoneError, .endZoneError{
+.poidsError, .typeError, .startZoneError, .endZoneError, .startDateError, .endDateError, .cargDateError{
     display: none;
     color: tomato;
-    font-weight: 900;
+    font-weight: 900; 
     font-size: 1.3rem;
 }
