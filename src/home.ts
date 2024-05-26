@@ -86,7 +86,7 @@ async function showAirCard() {
 
   data.forEach((item: any) => {
     const row = document.createElement("tr") as HTMLTableRowElement;
-    if (item.type === "air") {
+    if (item.type === "aire") {
       row.innerHTML = `
       <td class="border border-green-600">${item.numero}</td> 
       <td class="border border-green-600">${item.poids} Kg</td>
@@ -157,9 +157,9 @@ async function showMerCard() {
     }
   });
 }
-showMerCard();
 showRouteCard();
 showAirCard();
+showMerCard();
 
 //---------------------------------------------------FONCTION D'AJOUT NOUVELLE CARGAISON:
 async function newCargaison(cargaison: any) {
@@ -282,6 +282,8 @@ addCargForm?.addEventListener("submit", (e) => {
 });
 
 //--------------FONCTIONS D'AFFICHAGE DE TOUTES LES CARGAISONS AVEC FILTRE ET PAGINATION-------------------
+let currentPage = 1;
+const itemsPerPage = 3;
 async function fetchCargaisons(): Promise<any[]> {
   const response = await fetch("http://localhost:3000/cargaisons");
   return await response.json();
@@ -303,6 +305,8 @@ async function fetchData() {
   return await response.json();
 }
 
+
+
 function filterData(data: any[], searchTerm: string) {
   const lowerCaseSearchTerm = searchTerm.toLocaleLowerCase();
 
@@ -322,12 +326,14 @@ function filterData(data: any[], searchTerm: string) {
 }
 
 function renderData(data: any[]) {
-  const allCargs = document.querySelector(
-    ".allCargs"
-  ) as HTMLTableSectionElement;
-  allCargs.innerHTML = ""; // Clear existing rows
+  const allCargs = document.querySelector(".allCargs") as HTMLTableSectionElement;
+  allCargs.innerHTML = "";
 
-  data.forEach((item) => {
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginateData = data.slice(startIndex, endIndex);
+
+  paginateData.forEach((item) => {
     const row = document.createElement("tr") as HTMLTableRowElement;
     const statusColor = getStatusColor(item.status);
     row.innerHTML = `
@@ -347,7 +353,30 @@ function renderData(data: any[]) {
     `;
     allCargs.appendChild(row);
   });
+  renderPagination(data.length);
 }
+
+function renderPagination(totalItems:number){
+  const pagination = document.querySelector(".paginationDiv") as HTMLDivElement;
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  for(let i = 1; i<= totalPages; i++){
+    const button = document.createElement("button");
+    button.textContent = i.toString();
+    button.classList.add("pagination-button");
+    if(i === currentPage){
+      button.classList.add('active');
+    }
+    button.addEventListener("click", () => {
+      currentPage = i;
+      showAllCargs((document.getElementById('default-search') as HTMLInputElement).value);
+    })
+    pagination.appendChild(button);
+  }
+}
+
 
 async function showAllCargs(searchTerm: string = "") {
   const data = await fetchData();
