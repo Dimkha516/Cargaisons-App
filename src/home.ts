@@ -209,50 +209,64 @@ async function fetchCargaisons(): Promise<any[]> {
   return await response.json();
 }
 
-function renderCargaisons(cargaisons: any[]): void {
-  const allCargs = document.querySelector(".allCargs") as HTMLTableRowElement;
-  const parent = allCargs.parentNode as HTMLSelectElement;
-  parent.innerHTML = "";
+async function fetchData() {
+  const response = await fetch("http://localhost:3000/cargaisons");
+  return await response.json();
+}
 
-  cargaisons.forEach((item: any) => {
-    const row = document.createElement("tr") as HTMLTableRowElement;
-    row.innerHTML = `
-    <th>${item.numero}</th> 
-    <td>${item.type}</td>
-    <td>${item.poids} Kg</td> 
-    <td>${item.lieu_depart}</td>
-    <td>${item.destination}</td>
-    <td>${item.montant} Fr</td>
-    <td>${item.colis.length}</td> 
-    <div>
-      <button class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Modifier</button> 
-      <input type="checkbox" />
-    </div>
-    `;
-    parent.appendChild(row);
+function filterData(data: any[], searchTerm: string) {
+  const lowerCaseSearchTerm = searchTerm.toLocaleLowerCase();
+
+  return data.filter(item => {
+    const numero = item.numero?.toString().toLocaleLowerCase() || '';
+    const type = item.type?.toString().toLocaleLowerCase() || '';
+    const lieu_depart = item.lieu_depart?.toString().toLocaleLowerCase() || '';
+    const destination = item.destination?.toString().toLocaleLowerCase() || '';
+
+    return (
+      numero.includes(lowerCaseSearchTerm) ||
+      type.includes(lowerCaseSearchTerm) ||
+      lieu_depart.includes(lowerCaseSearchTerm) ||
+      destination.includes(lowerCaseSearchTerm)
+    );
   });
 }
 
-async function showAllCargs() {
-  const cargaisons = await fetchCargaisons();
-  renderCargaisons(cargaisons);
+function renderData(data: any[]) {
+  const allCargs = document.querySelector(".allCargs") as HTMLTableSectionElement;
+  allCargs.innerHTML = ''; // Clear existing rows
+
+  data.forEach(item => {
+    const row = document.createElement("tr") as HTMLTableRowElement;
+    row.innerHTML = `
+      <th>${item.numero}</th>
+      <td>${item.type}</td>
+      <td>${item.poids} Kg</td>
+      <td>${item.lieu_depart}</td>
+      <td>${item.destination}</td>
+      <td>${item.montant} Fr</td>
+      <td>${item.colis.length}</td>
+      <td>
+        <button class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Modifier</button>
+        <input type="checkbox" />
+      </td>
+    `;
+    allCargs.appendChild(row);
+  });
 }
 
-async function searchCargByNumber() {
-  const searchInput = document.getElementById("default-search") as HTMLInputElement;
-  const searchedValue = searchInput.value.trim();
-  if(searchedValue === ""){
-    showAllCargs();
-    return;
-  }
-  
-  const cargaisons = await fetchCargaisons();
-  const filteredCagaisons = cargaisons.filter(item => item.numero.includes(searchedValue));
-  renderCargaisons(filteredCagaisons);
+async function showAllCargs(searchTerm: string = '') {
+  const data = await fetchData();
+  const filteredData = filterData(data, searchTerm);
+  renderData(filteredData);
 }
- 
-document.getElementById("default-search")!.addEventListener("input", searchCargByNumber);
+
+document.getElementById("default-search")?.addEventListener('input', (event) => {
+  const searchTerm = (event.target as HTMLInputElement).value;
+  showAllCargs(searchTerm);
+})
 showAllCargs();
+
 // async function showAllCargs() {
 //   const response = await fetch("http://localhost:3000/cargaisons");
 //   const data = await response.json();
@@ -280,4 +294,3 @@ showAllCargs();
 //   });
 // }
 
-// showAllCargs();
