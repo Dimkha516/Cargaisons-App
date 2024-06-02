@@ -1,0 +1,20 @@
+{
+    "colis":[
+        {   
+            "code":12,
+            "type":"alimentaire",
+            "cargaison": "maritime",
+            "nombre_produits":10,
+            "poids": 100,
+            "prix":10000,
+            "etat": "recupere",
+            "nom_client":"polo",
+            "prenom_client":"client",
+            "tel_client":7737303783,
+            "address_client":"Dakar",
+            "email_client": "client@gmail.com",
+            "email_destinataire":"dest@gmail.com",
+            "tel_dest": 253563822
+        }
+    ]
+}

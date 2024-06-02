@@ -1,25 +1,218 @@
 {
-    "cargaisons": [
-      {
-        "numero": 1,
-        "poids": 100,
-        "colis": [
-          {
-            "code": 32,
-            "type": "alimentaire",
-            "poids": 10,
-            "prix": 10000,
-            "expediteur": "Demba Sow",
-            "destinataire": "Salimata Sow"
-          }
-        ],
-        "type": "Maritime",
-        "prix": 100000,
-        "lieu_depart": "Dakar",
-        "destination": "Bamako",
-        "distance": 1500,
-        "progression": "En cours",
-        "etat": "ferme"
-      }
-    ]
-  }
+  "cargaisons": [
+    {
+      "id": "7fcd",
+      "numero": "3-ui",
+      "type": "mer",
+      "poids": "600",
+      "colis": [],
+      "montant": 500000,
+      "lieu_depart": "Dakar",
+      "destination": "Algérie",
+      "depart": "2024-05-26",
+      "arrivee": "2024-05-28",
+      "progression": "En attente",
+      "status": "Ferme"
+    },
+    {
+      "id": "5eea",
+      "numero": "96-jm",
+      "type": "aire",
+      "poids": "800",
+      "colis": [],
+      "montant": 500000,
+      "lieu_depart": "Dakar",
+      "destination": "Pologne",
+      "depart": "2024-05-26",
+      "arrivee": "2024-05-30",
+      "progression": "En attente",
+      "status": "Ouvert"
+    },
+    {
+      "id": "00b6",
+      "numero": "41-wi",
+      "type": "mer",
+      "poids": "1000",
+      "colis": [],
+      "montant": 500000,
+      "lieu_depart": "Dakar",
+      "destination": "Gambie",
+      "depart": "2024-05-28",
+      "arrivee": "2024-05-29",
+      "progression": "En attente",
+      "status": "Ouvert"
+    },
+    {
+      "id": "fdd4",
+      "numero": "61-iq",
+      "type": "aire",
+      "poids": "79",
+      "colis": [],
+      "montant": 500000,
+      "lieu_depart": "Dolores laudantium ",
+      "destination": "Quia qui distinctio",
+      "depart": "2024-11-23",
+      "arrivee": "2024-11-25",
+      "progression": "En attente",
+      "status": "Ouvert"
+    },
+    {
+      "id": "3956",
+      "numero": "53-cd",
+      "type": "mer",
+      "poids": "12",
+      "colis": [],
+      "montant": 500000,
+      "lieu_depart": "Dakar",
+      "destination": "Paris",
+      "depart": "2024-05-27",
+      "arrivee": "2024-05-28",
+      "progression": "En attente",
+      "status": "Ouvert"
+    },
+    {
+      "id": "9475",
+      "numero": "64-bj",
+      "type": "terre",
+      "poids": "22",
+      "colis": [
+        {
+          "code_colis": "88-un",
+          "etat": "attente",
+          "type_produit": "alimentaire",
+          "voie": "terre",
+          "nombre_produit": "2",
+          "poids": "10",
+          "prix": 50000,
+          "nom_client": "kiko",
+          "prenom_client": "bragua",
+          "tel_client": "771234561",
+          "adress_client": "Dakar",
+          "email_client": "kiko@gmail.com",
+          "email_destinataire": "jumy@mailinator.com",
+          "tel_destinataire": "771234561"
+        },
+        {
+          "code_colis": "18-wo",
+          "etat": "attente",
+          "type_produit": "alimentaire",
+          "voie": "terre",
+          "nombre_produit": "3",
+          "poids": "20",
+          "prix": 100000,
+          "nom_client": "Papa",
+          "prenom_client": "Diop",
+          "tel_client": "771234561",
+          "adress_client": "Daka",
+          "email_client": "papa@gmail.com",
+          "email_destinataire": "rama@gmail.com",
+          "tel_destinataire": "331234567"
+        },
+        {
+          "code_colis": "28-og",
+          "etat": "attente",
+          "type_produit": "incassable",
+          "voie": "terre",
+          "nombre_produit": "4",
+          "poids": "10",
+          "prix": 50000,
+          "nom_client": "Fatima",
+          "prenom_client": "Kane",
+          "tel_client": "331234567",
+          "adress_client": "Rufisque",
+          "email_client": "fa@gmail.com",
+          "email_destinataire": "tala@gmail.com",
+          "tel_destinataire": "331235678"
+        }
+      ],
+      "montant": 500000,
+      "lieu_depart": "Dakar",
+      "destination": "Paris",
+      "depart": "2024-05-30",
+      "arrivee": "2024-05-31",
+      "progression": "En attente",
+      "status": "Ouvert"
+    },
+    {
+      "id": "603d",
+      "numero": "97-zm",
+      "type": "aire",
+      "poids": "30",
+      "colis": [],
+      "montant": 500000,
+      "lieu_depart": "Gambie",
+      "destination": "Sénégal",
+      "depart": "2024-05-31",
+      "arrivee": "2024-06-01",
+      "progression": "En attente",
+      "status": "Ouvert"
+    },
+    {
+      "id": "0c4e",
+      "numero": "46-rp",
+      "type": "mer",
+      "poids": "12",
+      "colis": [
+        {
+          "code_colis": "66-xa",
+          "etat": "attente",
+          "type_produit": "alimentaire",
+          "voie": "mer",
+          "nombre_produit": "65",
+          "poids": "57",
+          "prix": 456000,
+          "nom_client": "wami@mailinator.com",
+          "prenom_client": "Rerum nisi non nostr",
+          "tel_client": "+1 (196) 116-3712",
+          "adress_client": "+1 (196) 116-3712",
+          "email_client": "+1 (196) 116-3712",
+          "email_destinataire": "haxigywy@mailinator.com",
+          "tel_destinataire": "+1 (443) 945-1813"
+        }
+      ],
+      "montant": 500000,
+      "lieu_depart": "Coordonnées non trouvées",
+      "destination": "Coordonnées non trouvées",
+      "depart": "2024-05-30",
+      "arrivee": "2024-05-31",
+      "progression": "En attente",
+      "status": "Ouvert"
+    }
+  ],
+  "produits": [
+    {
+      "id": "51e2",
+      "code_colis": "66-xa",
+      "etat": "attente",
+      "type_produit": "alimentaire",
+      "voie": "mer",
+      "nombre_produit": "65",
+      "poids": "57",
+      "prix": 456000,
+      "nom_client": "Mamadou",
+      "prenom_client": "Samba",
+      "tel_client": "781235634",
+      "adress_client": "Dakar",
+      "email_client": "cli@gmail.com",
+      "email_destinataire": "des@gmail.com",
+      "tel_destinataire": "771253456"
+    },
+    {
+      "id": "0dc8",
+      "code_colis": "28-og",
+      "etat": "attente",
+      "type_produit": "incassable",
+      "voie": "terre",
+      "nombre_produit": "4",
+      "poids": "10",
+      "prix": 50000,
+      "nom_client": "Fatima",
+      "prenom_client": "Kane",
+      "tel_client": "331234567",
+      "adress_client": "Rufisque",
+      "email_client": "fa@gmail.com",
+      "email_destinataire": "tala@gmail.com",
+      "tel_destinataire": "331235678"
+    }
+  ]
+}

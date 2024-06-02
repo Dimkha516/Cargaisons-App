@@ -1,0 +1,29 @@
+[33mcommit f4defd2d1937bf91f775b39728dcadeeeff5c453[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/feature/pagination[m[33m, [m[1;32mfeature/pagination[m[33m)[m
+Author: Dimkha <dimkha516@gmail.com>
+Date:   Sun May 26 15:59:05 2024 +0000
+
+    pagination
+
+[33mcommit f6af33b7896337fc2c8c898c464835ac8310812d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/feature/ajout-cargaison-sans-integration-map[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeature/ajout-cargaison-sans-integration-map[m[33m)[m
+Author: Dimkha <dimkha516@gmail.com>
+Date:   Sun May 26 13:50:48 2024 +0000
+
+    ajout cargaison sans map
+
+[33mcommit f6bea66be120bd72424840378eb97a13247597f4[m[33m ([m[1;31morigin/feature/fonctionnalite-recherche[m[33m, [m[1;32mfeature/fonctionnalite-recherche[m[33m)[m
+Author: Dimkha <dimkha516@gmail.com>
+Date:   Sun May 26 10:49:23 2024 +0000
+
+    fonctionnalite de recherche
+
+[33mcommit 6a018ab8b6411398bb04ae9167ae76f5eb72c0fd[m[33m ([m[1;31morigin/feature/affichage-des-donnees[m[33m, [m[1;32mfeature/affichage-des-donnees[m[33m)[m
+Author: Dimkha <dimkha516@gmail.com>
+Date:   Sun May 26 00:21:18 2024 +0000
+
+    affichage des cargaisons
+
+[33mcommit e66ed192dbf4cc6a9ec0f531d890d3449a46da19[m
+Author: Dimkha <dimkha516@gmail.com>
+Date:   Fri May 24 21:57:38 2024 +0000
+
+    version maquette

@@ -1,0 +1,48 @@
+1: Contrôle Date: => (OK)
+2: Map:
+
+// ATTENTION AUX INPUTS LIEU DÉPART, DESTINATION DISTANCE ET KILOMÈTRE
+
+Module: ES6
+script: type="module"
+
+-----------------CHÉMATISATION POUR AJOUT PRODUIT:
+
+VÉRIFIER LA VAILIDITÉ DES DONNÉES SAISIES
+    
+    ----SI ERREUR SAISIES: RENVOYER ERREURS SAISIES ET BLOQUER L'AJOUT
+    
+    ---- SINON:
+
+** caluler le prix du ou des colis
+
+** stocker les variables suivants dans un objet:
+{
+    -- code_Colis,
+    -- etat(en attente, en cours, arrivé dans, en retard de, arrivé, recupéré, perdu, archivé)
+    -- type,
+    -- cargaison,
+    -- nombre_Produits,
+    -- poids,
+    -- prix,
+    -- nom_client":"polo",
+    -- prenom_client":,
+    -- tel_client"
+    -- address_client",
+    -- email_client,
+    -- email_destinataire,
+    -- tel_dest
+}
+
+** Masquer boutton ajouter produit et afficher bouton choisir cargaison
+
+** Au clique sur le bouton choisir cargaison faire le traitement suivant:
+
+    ** Ouvrir un popup avec la liste des cargaisons correspondantes qui ont l'etat ouvert et progress attente pour sélection
+    ** Ajouter le colis dans la cargaison selectionnée
+    ** Ajouter le colis dans le fichier des produits   
+    ** générer le reçu pour le client
+    ** envoyer mail et sms au destinataire
+    ** Fermer les popups
+
+

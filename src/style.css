@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+*{
+    user-select: none;
+}
+
 .bg-hero{
     background-image: url('/fond.jpg');
     background-size: cover;
@@ -17,4 +21,73 @@
 }
 .pagination-button{
     margin: 10px;
+}
+
+.modifBtn{
+    background-color: rgb(183, 186, 188);
+    margin-right: 15px;
+    color: darkblue;
+    font-weight: 900;
+}
+/* #map{
+    display: none;
+}  */
+
+
+.prenomClientError,
+.phoneClientError,
+.adressClientError,
+.prenomDestinataireError,
+.emailClientError,
+.nomClientError, 
+.nomDestinataireError,
+.telDestinataireError,
+.emailDestinataireError,
+.nombreColisError,
+.poidsProduitError,
+.typeProduitError,
+.cargaisonProduitError,
+.correspondError
+{
+    display: none;
+    color: tomato;
+    font-weight: 900; 
+    font-size: 1.3rem;
+}
+
+.prodPrice{
+    color: tomato;
+    font-weight: 900; 
+    font-size: 2rem;
+} 
+#chooseCargBtn{
+    display: none;
+}
+
+#container{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+#boxCargSelect{
+    max-width: 55rem;
+}
+.card{
+margin: 10px;
+padding: 10px;
+background-color: rgb(10, 79, 79);
+color: white;
+font-size: 1.3rem;
+width: 20vw;
+}
+
+.btnCarg{
+    width: 7vw;
+    font-size: 1.3rem;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+    background-color: rgb(26, 31, 68);
+    border-radius: 12px;
 }

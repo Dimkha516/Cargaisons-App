@@ -1,11 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- AJOUT ET RETRAIT PRODUITS DANS CARGAISONS -->
+<!-- FERMER ET RÉOUVRIR CARGAISON -->
+<!-- TIPS: CRÉER UN FICHIER POUR ENREGISTRER CLIENTS -->
+
+<?php
+$json_data = file_get_contents('../Data/cargaisons.json');
+$cargaisons = json_decode($json_data, true)['cargaisons'];
+?>
+
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="../dist/style.css" rel="stylesheet" />
-  <title>Document</title>
+  <title>Documents</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> -->
   <style>
     .border {
       border: 1px solid green;
@@ -20,10 +29,24 @@
       width: 100px;
       /* Vous pouvez ajuster cette valeur à la largeur souhaitée */
     }
+
+    #map {
+      height: 60vh;
+      width: 100%;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      padding: 16px;
+      margin: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 
 <body>
+
   <!-- class="bg-hero h-screen" -->
   <!-- <h1 class="text-3xl font-bold underline">Welcomes</h1> -->
   <div class="main">
@@ -43,6 +66,7 @@
             <li><a href="#">Update</a></li>
           </ul>
         </div>
+
         <img src="../medias/logo.png" class="w-32 border-4 border-blue-500 rounded-lg" alt="Logo">
       </div>
       <div class="navbar-center">
@@ -58,95 +82,105 @@
         <!-- BOUTON AJOUT PRODUIT -->
         <a href="#my_modal_8" class="btn btn-info text-2xl ml-8">+AJOUTER COLIS</a>
 
+
         <div class="modal" role="dialog" id="my_modal_8">
           <div class="modal-box">
             <!-----------------------------------ADD PROD FORM START------------------------------->
 
-            <form class="max-w-md mx-auto">
+            <form class="addProdForm max-w-md mx-auto">
               <div class="relative z-0 w-full mb-5 group">
                 <input type="text" name="floating_email" id="floating_email"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" " required />
+                  class="nomClient block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" " />
                 <label for="floating_email"
                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nom
                   client</label>
+                <span class="nomClientError">Nom Client Err</span>
               </div>
               <!--  -->
               <div class="relative z-0 w-full mb-5 group">
                 <input type="text" name="floating_password" id="floating_password"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" " required />
+                  class="prenomClient block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" " />
                 <label for="floating_password"
                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Prénom(s)
                   client</label>
+                <span class="prenomClientError">ERROR</span>
               </div>
               <!--  -->
               <div class="relative z-0 w-full mb-5 group">
-                <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="floating_phone" id="floating_phone"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" " required />
+                <input type="text" name="floating_phone" id="floating_phone"
+                  class="phoneClient block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" " />
                 <label for="floating_phone"
                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Tél
-                  client (123-456-7890)</label>
-              </div>
-              <!--  -->
-              <div class="relative z-0 w-full mb-5 group">
-                <input type="email" name="repeat_password" id="floating_repeat_password"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" " />
-                <label for="floating_repeat_password"
-                  class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email
-                  client</label>
+                  client (771234567)</label>
+                <span class="phoneClientError">ERROR</span>
               </div>
               <!--  -->
               <div class="relative z-0 w-full mb-5 group">
                 <input type="text" name="repeat_password" id="floating_repeat_password"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" " required />
+                  class="emailClient block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" " />
+                <label for="floating_repeat_password"
+                  class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email
+                  client (facultatif)</label>
+                <span class="emailClientError">ERROR</span>
+              </div>
+              <!--  -->
+              <div class="relative z-0 w-full mb-5 group">
+                <input type="text" name="repeat_password" id="floating_repeat_password"
+                  class="adressClient block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" " />
                 <label for="floating_repeat_password"
                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Adresse
                   client</label>
+                <span class="adressClientError">ERROR</span>
               </div>
               <!--  -->
               <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full mb-5 group">
                   <input type="text" name="floating_first_name" id="floating_first_name"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" " required />
+                    class="nomDestinataire block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" " />
                   <label for="floating_first_name"
                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nom
                     destinataire</label>
+                  <span class="nomDestinataireError">ERROR</span>
                 </div>
                 <!--  -->
                 <div class="relative z-0 w-full mb-5 group">
                   <input type="text" name="floating_last_name" id="floating_last_name"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" " required />
+                    class="prenomDestinataire block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" " />
                   <label for="floating_last_name"
                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Prénom
                     destinataire</label>
+                  <span class="prenomDestinataireError">ERROR</span>
                 </div>
                 <!--  -->
               </div>
               <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full mb-5 group">
-                  <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="floating_phone" id="floating_phone"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" " required />
+                  <input type="tel" name="floating_phone" id="floating_phone"
+                    class="telDestinataire block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" " />
                   <label for="floating_phone"
                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Tél
                     destinataire</label>
+                  <span class="telDestinataireError">ERROR</span>
                 </div>
                 <!--  -->
                 <div class="relative z-0 w-full mb-5 group">
-                  <input type="email name=" floating_company" id="floating_company" class="block py-2.5 px-0 w-full
+                  <input type="email name=" floating_company" id="floating_company" class="emailDestinataire block py-2.5 px-0 w-full
                     text-sm text-gray-900 bg-transparent border-0 border-b-2
                     border-gray-300 appearance-none dark:text-white
                     dark:border-gray-600 dark:focus:border-blue-500
-                    focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                   <label for="floating_company"
                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email
                     destinataire</label>
+                  <span class="emailDestinataireError">ERROR</span>
                 </div>
                 <!--  -->
               </div>
@@ -154,59 +188,76 @@
               <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full mb-5 group">
                   <input type="number" name="floating_first_name" id="floating_first_name"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    class="nombreColis block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" " />
                   <label for="floating_first_name"
                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                    de colis</label>
+                    de produits</label>
+                  <span class="nombreColisError">ERROR</span>
                 </div>
                 <!--  -->
                 <div class="relative z-0 w-full mb-5 group">
                   <input type="number" name="floating_last_name" id="floating_last_name"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    class="poidsProduit block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" " />
                   <label for="floating_last_name"
                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Poids</label>
+                  <span class="poidsProduitError">ERROR</span>
                 </div>
                 <!--  -->
               </div>
               <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full mb-5 group">
                   <div class="mb-5">
-                    <select class="select select-bordered w-full max-w-xs" id="cargaisonType">
-                      <option disabled selected>Type de cargaison</option>
+                    <select class="cargaisonProduit select select-bordered w-full max-w-xs" id="cargaisonType">
+                      <option disabled selected value="0">Type de cargaison</option>
                       <option value="terre">Routière</option>
                       <option value="mer">Maritime</option>
                       <option value="aire">Aérienne</option>
                     </select>
+                    <span class="cargaisonProduitError">ERROR</span>
                   </div>
                 </div>
                 <!--  -->
                 <div class="relative z-0 w-full mb-5 group">
                   <div class="mb-5">
-                    <select class="select select-bordered w-full max-w-xs" id="cargaisonType">
+                    <select class="typeProduit select select-bordered w-full max-w-xs" id="cargaisonType">
                       <option disabled selected>Type de Produit</option>
                       <option value="alimentaire">Alimentaire</option>
                       <option value="chimic">Chimique</option>
                       <option value="cassable">Fragile</option>
                       <option value="incassable">Incassable</option>
                     </select>
+                    <span class="typeProduitError">ERROR</span>
                   </div>
                 </div>
                 <!--  -->
+                <span class="correspondError">ERROR</span>
               </div>
               <!--  -->
-              <button type="submit"
+              <div class="relative z-0 w-full mb-5 group">
+                <input type="text" readonly name="repeat_password" id="floating_repeat_password"
+                  class="prodPrice block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" " />
+                <label for="floating_repeat_password"
+                  class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                  Prix du colis</label>
+                <!-- <span class="emailClientError">ERROR</span> -->
+              </div>
+              <!--  -->
+              <button type="submit" id="addCargBtn"
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Ajouter
               </button>
             </form>
+            <button class="btn text-white bg-blue-700" id="chooseCargBtn" onclick="my_modal_1.showModal()">Choisir
+              Cargaison</button>
 
-            <!-----------------------------------ADD PROD FORM END---------------------------------->
             <div class="modal-action">
               <a href="#" class="btn">Annuler</a>
             </div>
           </div>
+          <!-----------------------------------ADD PROD FORM END---------------------------------->
         </div>
 
         <dialog id="my_modal_3" class="modal">
@@ -221,62 +272,114 @@
             </p>
 
             <!----------------------------------------ADD CARGAISON FORM START--------------------------------->
-            <form class="formulaire max-w-sm mx-auto">
+            <form method="POST" class="addCargaisonForm max-w-sm mx-auto">
               <h2>Ajouter cargaison</h2>
-              <h3 class="cargError" style="color: red">ERROR</h3>
-              <div class="mb-5">
-                <input type="number" id="numeroCarg"
-                  class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                  placeholder="N° Cargaison" />
-              </div>
+              <!-- <h3 class="cargError" style="color: red"></h3> -->
+
               <div class="mb-5">
                 <input type="number" id="poidsCarg"
                   class="shadow-sm bg-gray-50 border border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   placeholder="Poids max" />
+                <span class="poidsError">Poids Error</span>
               </div>
               <div class="mb-5">
                 <label for="cargaisonType" class="block mb-2 text-3xl text-purple-700 text-opacity-100">Type de
                   cargaison</label>
-                <select class="select select-bordered w-full max-w-xs" id="cargaisonType">
+
+                <select class="cargaisonType select select-bordered w-full max-w-xs" id="cargaisonType">
                   <option disabled selected>Type de cargaison</option>
                   <option value="terre">Routière</option>
                   <option value="mer">Maritime</option>
                   <option value="aire">Aérienne</option>
                 </select>
               </div>
+              <span class="typeError">Type Error</span>
               <!--  -->
 
               <!--  -->
 
               <!--  -->
               <div class="mb-5">
-                <label for="depart" class="block mb-2 text-3xl text-purple-700 text-opacity-100">Coordonnées lieu
-                  départ</label>
+                <div id="map">
+                  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+                </div>
+                <label for="depart" class="block mb-2 text-3xl text-purple-700 text-opacity-100">lieu départ</label>
                 <input type="text" id="depart"
                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" />
+                <!-- <input type="text" id="place-name" readonly>
+                  <div id="map"></div> -->
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                <!-- <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.619337479684!2d-17.288513575217095!3d14.734100785768224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xec19ffc5d2b4f0f%3A0x6671824fed8c6097!2sCit%C3%A9%20ASECNA%20Rufisque%2C%20Dakar!5e0!3m2!1sfr!2ssn!4v1716765071488!5m2!1sfr!2ssn"
+                width="300" height="100" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+                <span class="startZoneError">Erreur départ</span>
               </div>
               <div class="mb-5">
-                <label for="arrivee" class="block mb-2 text-3xl text-purple-700 text-opacity-100">Coordonnées
-                  destination</label>
+                <label for="arrivee" class="block mb-2 text-3xl text-purple-700 text-opacity-100">Destination</label>
                 <input type="text" id="arrivee"
                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" />
+                <!-- ; <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.619337479684!2d-17.288513575217095!3d14.734100785768224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xec19ffc5d2b4f0f%3A0x6671824fed8c6097!2sCit%C3%A9%20ASECNA%20Rufisque%2C%20Dakar!5e0!3m2!1sfr!2ssn!4v1716765071488!5m2!1sfr!2ssn"
+                width="300" height="100" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+                <span class="endZoneError">End Zone Error</span>
               </div>
               <!--  -->
               <div class="mb-5">
-                <input type="number" id="cargDistance" readonly
+                <label for="cargDistance" class="block mb-2 text-3xl text-purple-700 text-opacity-100">Distance
+                  (Km)</label>
+                <input type="text" id="cargDistance" readonly
                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   placeholder="Distance (20 Km minimum)" />
               </div>
               <!--  -->
-
+              <div class="mb-5">
+                <label for="dateDepart" class="block mb-2 text-3xl text-purple-700 text-opacity-100">Date Départ</label>
+                <input type="date" id="dateDepart"
+                  class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" />
+                <span class="startDateError"></span>
+              </div>
+              <!--  -->
+              <div class="mb-5">
+                <label for="dateArrivee" class="block mb-2 text-3xl text-purple-700 text-opacity-100">Date
+                  D'arrivée</label>
+                <input type="date" id="dateArrivee"
+                  class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" />
+                <span class="endDateError">End Date Error</span>
+                <span class="cargDateError">Carg Date Error</span>
+              </div>
+              <!--  -->
               <button type="submit"
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Ajouter
               </button>
+
             </form>
             <!----------------------------------------ADD CARGAISON FORM END--------------------------------->
           </div>
         </dialog>
+        <!----------------------------------------CHOOSE PRODUCT'S CARGAISON BOX START-------------------------------------->
+        <dialog id="my_modal_1" class="modal">
+          <div class="modal-box" id="boxCargSelect">
+            <h2 style="font-size:2rem;">
+              🔜 Séléctionner cargaison
+            </h2>
+            <div id="container">
+            </div>
+            
+            <!-- <div class="card w-96 bg-base-100 shadow-xl">
+              
+            </div> -->
+            <div class="modal-action">
+              <form method="dialog">
+                <!-- if there is a button in form, it will close the modal -->
+                <button class="btn">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+        <!----------------------------------------CHOOSE PRODUCT'S CARGAISON BOX END-------------------------------------->
         <!---------------------------------------OPEN & CLOSE MODALS END-------------------------------->
       </div>
       <div class="navbar-end">
@@ -284,15 +387,15 @@
 
           <div class="relative w-full">
             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+              <!-- <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
-              </svg>
+              </svg> -->
             </div>
-            <input type="text" id="simple-search"
+            <!-- <input type="text" id="simple-search"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search branch name..." required />
+              placeholder="Search branch name..." required /> -->
           </div>
 
         </form>
@@ -316,47 +419,37 @@
               <thead>
                 <tr>
                   <th class="border border-green-600 narrow-column">
-                    Départ
+                    N°
                   </th>
                   <th class="border border-green-600 narrow-column">
-                    Arrivée
+                    Poids
                   </th>
                   <th class="border border-green-600 narrow-column">
                     Montant
                   </th>
+                  <th class="border border-green-600 narrow-column">
+                    Etat
+                  </th>
+                  <th class="border border-green-600 narrow-column">
+                    Progress
+                  </th>
+                  <th class="border border-green-600 narrow-column">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
+                <tr class="airDatas">
+                  <!-- <td class="border border-green-600 airNumero">102</td>
+                  <td class="border border-green-600 airePoids">200 KG</td>
+                  <td class="border border-green-600 airePrix">300.000 FR</td>
+                  <td class="border border-green-600 aireStatus">Ouvert</td>
+                  <td class="border border-green-600 aireProgress">En attente</td>
+                  <td class="border border-green-600"> -->
+                  <!-- <button>Modifier</button> -->
+                  <!-- </td> -->
                 </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
+
               </tbody>
             </table>
           </div>
@@ -371,53 +464,45 @@
         <div class="collapse-content">
           <p>content</p>
           <div class="grid grid-flow-col text-center p-2">
+            <!--  -->
             <table class="border-Collapse border border-green-900">
               <thead>
                 <tr>
                   <th class="border border-green-600 narrow-column">
-                    Départ
+                    N°
                   </th>
                   <th class="border border-green-600 narrow-column">
-                    Arrivée
+                    Poids
                   </th>
                   <th class="border border-green-600 narrow-column">
                     Montant
                   </th>
+                  <th class="border border-green-600 narrow-column">
+                    Etat
+                  </th>
+                  <th class="border border-green-600 narrow-column">
+                    Progress
+                  </th>
+                  <th class="border border-green-600 narrow-column">
+                    Modifier
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
+                <tr class="routeDatas">
+                  <!-- <td class="border border-green-600">102</td>
+                  <td class="border border-green-600">200 KG</td>
+                  <td class="border border-green-600">300.000 FR</td>
+                  <td class="border border-green-600">Ouvert</td>
+                  <td class="border border-green-600">En attente</td>
+                  <td class="border border-green-600">
+                    <button>Modifier</button> -->
+                  </td>
                 </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
+
               </tbody>
             </table>
+            <!--  -->
           </div>
         </div>
       </details>
@@ -434,47 +519,37 @@
               <thead>
                 <tr>
                   <th class="border border-green-600 narrow-column">
-                    Départ
+                    N°
                   </th>
                   <th class="border border-green-600 narrow-column">
-                    Arrivée
+                    Poids
                   </th>
                   <th class="border border-green-600 narrow-column">
                     Montant
                   </th>
+                  <th class="border border-green-600 narrow-column">
+                    Etat
+                  </th>
+                  <th class="border border-green-600 narrow-column">
+                    Progress
+                  </th>
+                  <th class="border border-green-600 narrow-column">
+                    Modifier
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
+                <tr class="merDatas">
+                  <!-- <td class="border border-green-600">102</td>
+                  <td class="border border-green-600">200 KG</td>
+                  <td class="border border-green-600">300.000 FR</td>
+                  <td class="border border-green-600">Ouvert</td>
+                  <td class="border border-green-600">En attente</td>
+                  <td class="border border-green-600">
+                    <button>Modifier</button> -->
+                  <!-- </td> -->
                 </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
-                <tr>
-                  <td class="border border-green-600">10/02/2024</td>
-                  <td class="border border-green-600">10/05/2024</td>
-                  <td class="border border-green-600">100.000 FR</td>
-                </tr>
+
               </tbody>
             </table>
           </div>
@@ -482,14 +557,104 @@
       </details>
     </div>
 
+
+    <!-------------------------------------------SEARCH BAR START---------------------------->
+
+    <form class="max-w-md mx-auto">
+      <!-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label> -->
+      <div class="relative">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+          </svg>
+        </div>
+        <input type="search" id="default-search"
+          class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Code, Type, Destination..." />
+        <!-- <button type="submit"
+          class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button> -->
+      </div>
+    </form>
+
+    <!-------------------------------------------SEARCH BAR END------------------------------>
+
+    <!-- AFFICHAGES TOUTES CARGAISONS  START----->
+    <div class="overflow-x-auto">
+      <table class="table table-xs">
+        <thead>
+          <tr>
+            <th class="text-2xl">Code</th>
+            <th class="text-2xl">Type</th>
+            <th class="text-2xl">Poids</th>
+            <th class="text-2xl">Zone départ</th>
+            <th class="text-2xl">Destination</th>
+            <th class="text-2xl">Montant</th>
+            <th class="text-2xl">Nbr colis</th>
+            <th class="text-2xl">Etat</th>
+            <th class="text-2xl">Progress</th>
+            <th class="text-2xl">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="allCargs">
+          <?php foreach ($cargaisons as $cargaison): ?>
+          <tr>
+            <td>
+              <?php echo htmlspecialchars($cargaison["id"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["type"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["poids"] . " Kg") ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["lieu_depart"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["destination"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["montant"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["montant"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["status"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($cargaison["progression"]) ?>
+            </td>
+            <td>
+              <button
+                class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Modifier</button>
+              <input type="checkbox" class="modifCheck">
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+      <tbody id="cargaison-body">
+        <!-- Les données seront insérées ici par JavaScript -->
+      </tbody>
+      <div class="pagination">
+        <button id="prev-page">Précédent</button>
+        <button id="next-page">Suivant</button>
+      </div>
+    </div>
+
+    <!-- AFFICHAGES TOUTES CARGAISONS END----->
+
     <!---------------------------LISTE CARGAISONS END------------------------------ -->
 
     <!---------------------------PAGINATION START------------------------------ -->
-    <div class="join" style="position: relative; left: 70%">
-      <button class="join-item btn">1</button>
+    <div class="join paginationDiv" style="position: relative; left: 70%">
+      <!-- <button class="join-item btn">1</button>
       <button class="join-item btn btn-active">2</button>
       <button class="join-item btn">3</button>
-      <button class="join-item btn">4</button>
+      <button class="join-item btn">4</button> -->
     </div>
     <!---------------------------PAGINATION END------------------------------ -->
 
@@ -525,8 +690,7 @@
       </aside>
     </footer>
     <!----------------------------FOOTER END-------------------------------->
-  </div>
-  <script src="../dist/home.js"></script>
-</body>
 
-</html>
+  </div>
+  <script type="module" src="../dist/home.js"></script>
+</body>

@@ -1,3 +1,7 @@
+<?php
+$json_data = file_get_contents('../Data/cargaisons.json');
+$produits = json_decode($json_data, true)['produits'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +12,7 @@
   <title>Document</title>
 </head>
 
-<h>
+<body>
   <div class="mainProduits">
     <div class="navbar bg-base-100">
       <div class="navbar-start">
@@ -65,6 +69,74 @@
     </div>
     <!---------------------------NAVBAR END------------------------------ -->
   </div>
-</h>
-
+  <div class="overflow-x-auto">
+      <table class="table table-xs">
+        <thead>
+          <tr>
+            <th class="text-2xl">Code</th>
+            <th class="text-2xl">Type</th>
+            <th class="text-2xl">Poids</th>
+            <th class="text-2xl">Etat</th>
+            <th class="text-2xl">Voie</th>
+            <th class="text-2xl">Prix</th>
+            <th class="text-2xl">Nbr Prod</th>
+            <th class="text-2xl">Client</th>
+            <th class="text-2xl">adresse client</th>
+            <th class="text-2xl">Tel.destinataire</th>
+            <!-- <th class="text-2xl">Actions</th> -->
+          </tr>
+        </thead>
+        <tbody class="allCargs">
+          <?php foreach ($produits as $produit): ?>
+          <tr>
+            <td>
+              <?php echo htmlspecialchars($produit["code_colis"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["type_produit"]) ?>
+            </td> 
+            <td>
+              <?php echo htmlspecialchars($produit["poids"] . "KG") ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["etat"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["voie"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["prix"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["nombre_produit"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["nom_client"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["adress_client"]) ?>
+            </td>
+            <td>
+              <?php echo htmlspecialchars($produit["tel_destinataire"]) ?>
+            </td>
+            
+            <!-- <td>
+              <button
+                class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Modifier</button>
+              <input type="checkbox" class="modifCheck">
+            </td> -->
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+      <tbody id="cargaison-body">
+        <!-- Les données seront insérées ici par JavaScript -->
+      </tbody>
+      <div class="pagination">
+        <button id="prev-page">Précédent</button>
+        <button id="next-page">Suivant</button>
+      </div>
+    </div>
+</body>
+  <script type="module" src="../dist/produits.js"></script>
 </html>

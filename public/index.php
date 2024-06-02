@@ -18,4 +18,3 @@ include_once "../pages/" .$currentPage . ".php";
 
 //  Déclarer produit d'une cargaison arrivée comme perdue.
 
- 
