@@ -19,7 +19,24 @@
       "numero": "96-jm",
       "type": "aire",
       "poids": "800",
-      "colis": [],
+      "colis": [
+        {
+          "code_colis": "50-oo",
+          "etat": "attente",
+          "type_produit": "incassable",
+          "voie": "aire",
+          "nombre_produit": "12",
+          "poids": "20",
+          "prix": 200000,
+          "nom_client": "Bamba",
+          "prenom_client": "Fall",
+          "tel_client": "771234567",
+          "adress_client": "Dakar",
+          "email_client": "bamba@gmail.com",
+          "email_destinataire": "faly@gmail.com",
+          "tel_destinataire": "771234567"
+        }
+      ],
       "montant": 500000,
       "lieu_depart": "Dakar",
       "destination": "Pologne",
@@ -213,6 +230,23 @@
       "email_client": "fa@gmail.com",
       "email_destinataire": "tala@gmail.com",
       "tel_destinataire": "331235678"
+    },
+    {
+      "id": "ca34",
+      "code_colis": "50-oo",
+      "etat": "attente",
+      "type_produit": "incassable",
+      "voie": "aire",
+      "nombre_produit": "12",
+      "poids": "20",
+      "prix": 200000,
+      "nom_client": "Bamba",
+      "prenom_client": "Fall",
+      "tel_client": "771234567",
+      "adress_client": "Dakar",
+      "email_client": "bamba@gmail.com",
+      "email_destinataire": "faly@gmail.com",
+      "tel_destinataire": "771234567"
     }
   ]
 }

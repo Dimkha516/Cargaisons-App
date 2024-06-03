@@ -91,3 +91,30 @@ width: 20vw;
     background-color: rgb(26, 31, 68);
     border-radius: 12px;
 }
+
+.infosColis{
+    display: flex;
+    justify-content: space-around;
+}
+
+.separator{
+    position: relative;
+    top: 90px;
+    height: 1vh;
+    width: 15vw;
+    background-color: rgb(132, 132, 154);
+    color: red;
+    rotate: 90deg;
+}
+
+.closeCargInfos{
+    position: relative;
+    right: 600px;
+    top: 20px;
+}
+
+.typeInfo, .poidsInfo, .prodInfo, .montantInfo, .date2Info,
+.date1Info, .zone1Info, .zone2Info, .stateInfo, .progressInfo{
+    font-size: 1.5rem;
+    margin: 5px;
+}

@@ -367,6 +367,72 @@ function filterData(data, searchTerm) {
         // );
     });
 }
+//--------------------------MODIFICATION STATUS CARGAISON:------------------------------
+async function updateCargStatus(cargaison) {
+    try {
+        const response = await fetch(`http://localhost:3000/cargaisons/${cargaison.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cargaison),
+        });
+        if (!response.ok) {
+            throw new Error("Error to update cargaisons");
+        }
+    }
+    catch (error) {
+        console.error("Error updating cargaisons:", error);
+    }
+}
+async function setUpStatus(id) {
+    try {
+        const cargaison = await fetchItems2();
+        const cargToUpdate = cargaison.find((cargaison) => cargaison.id === id);
+        if (cargToUpdate) {
+            if (cargToUpdate.status === "Ferme") {
+                cargToUpdate.status = "Ouvert";
+            }
+            else {
+                cargToUpdate.status = "Ferme";
+            }
+            console.log(cargToUpdate.status);
+        }
+    }
+    catch (error) {
+        //
+        console.error("Error updating status:", error);
+    }
+}
+//------------------------------------------------------------------------------------------------------
+//--------------------------FONCTION POUR AFFICHER DÉTAILS D'UNE CARGAISON------------------------------
+async function showCargInfos(id) {
+    const closeCargInfos = document.querySelector(".closeCargInfos");
+    //----------------------------------------------------
+    const typeInfo = document.querySelector(".typeInfo");
+    const poidsInfo = document.querySelector(".poidsInfo");
+    const prodInfo = document.querySelector(".prodInfo");
+    const montantInfo = document.querySelector(".montantInfo");
+    const date1Info = document.querySelector(".date1Info");
+    const date2Info = document.querySelector(".date2Info");
+    const zone1Info = document.querySelector(".zone1Info");
+    const zone2Info = document.querySelector(".zone2Info");
+    const stateInfo = document.querySelector(".stateInfo");
+    const progressInfo = document.querySelector(".progressInfo");
+    //--------------------------------------------------- 
+    const datas = await fetchItems2();
+    const selectedCarg = datas.filter((item) => item.numero === id);
+    typeInfo.textContent += ` ${selectedCarg[0].type}`;
+    poidsInfo.textContent += ` ${selectedCarg[0].poids} Kg`;
+    prodInfo.textContent += ` ${selectedCarg[0].colis.length}`;
+    montantInfo.textContent += ` ${selectedCarg[0].montant} Fr`;
+    date1Info.textContent += `Le ${selectedCarg[0].depart}`;
+    date2Info.textContent += `Le ${selectedCarg[0].arrivee}`;
+    zone1Info.textContent += ` ${selectedCarg[0].lieu_depart}`;
+    zone2Info.textContent += ` ${selectedCarg[0].destination}`;
+    stateInfo.textContent += ` ${selectedCarg[0].status}`;
+    progressInfo.textContent += ` ${selectedCarg[0].progression}`;
+    // typeInfo.textContent += `${selectedCarg.numero}`; 
+}
+//------------------------------------------------------------------------------------------------------
 function renderData(data) {
     const allCargs = document.querySelector(".allCargs");
     allCargs.innerHTML = "";
@@ -384,15 +450,15 @@ function renderData(data) {
       <td class="text-base">${item.destination}</td>
       <td class="text-base">${item.montant} Fr</td>
       <td class="text-base">${item.colis.length}</td>
-      <td class="text-base" style="color: ${statusColor}; cursor:pointer">${item.status}</td>
+      <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
       <td class="text-base">${item.progression}</td>
       <td class="text-base">
-        <button id="${item.id}" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
+        <button id="${item.numero}" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
         <input type="checkbox" id='${item.id}' class="modifCheck" /> 
       </td>
       `;
         allCargs?.appendChild(row);
-        // Select the status cell
+        //------------------BOUTON CHANGEMENT STATUS CARGAISON
         const statusCell = row.querySelector("td:nth-child(8)");
         // Add click event listener to the status cell
         statusCell.addEventListener("click", () => {
@@ -405,8 +471,25 @@ function renderData(data) {
                 statusCell.style.color = getStatusColor("Ferme");
             }
         });
+        const cargStatusBtn = document.querySelectorAll(".cargStatus");
+        cargStatusBtn.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const target = e.target;
+                setUpStatus(target.id);
+            });
+        });
+        renderPagination(data.length);
     });
-    renderPagination(data.length);
+    // let my_modal_5:any;
+    //--------------------BOUTON AFFICHAGE DÉTAILS CARGAISON:
+    const modifBtn = document.querySelectorAll(".modifBtn");
+    modifBtn.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const target = e.target;
+            showCargInfos(target.id);
+            my_modal_5.showModal();
+        });
+    });
 }
 function renderPagination(totalItems) {
     const pagination = document.querySelector(".paginationDiv");
@@ -582,6 +665,7 @@ async function updateCargaisons(cargaison) {
         console.error("Error updating cargaisons:", error);
     }
 }
+//
 async function addColis(numero, nouveauColis) {
     try {
         const cargaisons = await fetchItems2();
@@ -598,10 +682,6 @@ async function addColis(numero, nouveauColis) {
         console.error("Error adding colis:", error);
     }
 }
-const newColis = {
-    design: "tomate",
-    prix: 200,
-};
 // addColis("3-ui", newColis)
 // async function addColis(numero:string, nouveauColis:any){
 //   const cargaisons = await fetchItems();
@@ -824,10 +904,10 @@ addProdForm.addEventListener("submit", (e) => {
         // const addedProduct = newProduit(product);
         // console.log(addedProduct);
         chooseCargBtn.style.display = "block";
-        let comapreType = cargaisonProduit.value;
+        let compareType = cargaisonProduit.value;
         async function displayItems() {
             const items = await fetchItems();
-            const filteredCarg = items.filter((item) => item.type === comapreType);
+            const filteredCarg = items.filter((item) => item.type === compareType);
             const container = document.getElementById("container");
             if (container) {
                 // items.forEach((item) => {
@@ -843,7 +923,7 @@ addProdForm.addEventListener("submit", (e) => {
             btnCarg.forEach((btn) => {
                 btn.addEventListener("click", (e) => {
                     const target = e.target;
-                    console.log(target.id);
+                    // console.log(target.id);
                     addColis(target.id, product);
                     try {
                         const addedProduct = newProduit(product);

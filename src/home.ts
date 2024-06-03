@@ -424,6 +424,86 @@ function filterData(data: any[], searchTerm: string) {
   });
 }
 
+//--------------------------MODIFICATION STATUS CARGAISON:------------------------------
+async function updateCargStatus(cargaison: any): Promise<void> {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/cargaisons/${cargaison.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cargaison),
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Error to update cargaisons");
+    }
+  } catch (error) {
+    console.error("Error updating cargaisons:", error);
+  }
+}
+async function setUpStatus(id: string): Promise<void> {
+  try {
+    const cargaison = await fetchItems2();
+    const cargToUpdate = cargaison.find((cargaison) => cargaison.id === id);
+    if (cargToUpdate) {
+      if (cargToUpdate.status === "Ferme") {
+        cargToUpdate.status = "Ouvert";
+      } else {
+        cargToUpdate.status = "Ferme";
+      }
+      console.log(cargToUpdate.status);
+    }
+  } catch (error) {
+    //
+    console.error("Error updating status:", error);
+  }
+}
+//------------------------------------------------------------------------------------------------------
+
+//--------------------------FONCTION POUR AFFICHER DÉTAILS D'UNE CARGAISON------------------------------
+async function showCargInfos(id: string) {
+  const closeCargInfos = document.querySelector(".closeCargInfos") as HTMLButtonElement;
+  //----------------------------------------------------
+  const typeInfo = document.querySelector(".typeInfo") as HTMLElement;
+  const poidsInfo = document.querySelector(".poidsInfo") as HTMLElement;
+  const prodInfo = document.querySelector(".prodInfo") as HTMLElement;
+  const montantInfo = document.querySelector(".montantInfo") as HTMLElement;
+  const date1Info = document.querySelector(".date1Info") as HTMLElement;
+  const date2Info = document.querySelector(".date2Info") as HTMLElement;
+  const zone1Info = document.querySelector(".zone1Info") as HTMLElement;
+  const zone2Info = document.querySelector(".zone2Info") as HTMLElement;
+  const stateInfo = document.querySelector(".stateInfo") as HTMLElement;
+  const progressInfo = document.querySelector(".progressInfo") as HTMLElement;
+  //--------------------------------------------------- 
+  const datas = await fetchItems2();
+  const selectedCarg = datas.filter((item) => item.numero === id);
+  typeInfo.textContent += ` ${selectedCarg[0].type}`;
+  poidsInfo.textContent += ` ${selectedCarg[0].poids} Kg`
+  prodInfo.textContent += ` ${selectedCarg[0].colis.length}`
+  montantInfo.textContent += ` ${selectedCarg[0].montant} Fr`
+  date1Info.textContent += `Le ${selectedCarg[0].depart}`
+  date2Info.textContent += `Le ${selectedCarg[0].arrivee}`
+  zone1Info.textContent += ` ${selectedCarg[0].lieu_depart  }`
+  zone2Info.textContent += ` ${selectedCarg[0].destination}`
+  stateInfo.textContent += ` ${selectedCarg[0].status}`
+  progressInfo.textContent += ` ${selectedCarg[0].progression}`
+
+
+
+
+
+
+
+  
+  
+  
+  
+  // typeInfo.textContent += `${selectedCarg.numero}`; 
+
+}
+//------------------------------------------------------------------------------------------------------
+
 function renderData(data: any[]) {
   const allCargs = document.querySelector(
     ".allCargs"
@@ -445,19 +525,19 @@ function renderData(data: any[]) {
       <td class="text-base">${item.destination}</td>
       <td class="text-base">${item.montant} Fr</td>
       <td class="text-base">${item.colis.length}</td>
-      <td class="text-base" style="color: ${statusColor}; cursor:pointer">${item.status}</td>
+      <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
       <td class="text-base">${item.progression}</td>
       <td class="text-base">
-        <button id="${item.id}" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
+        <button id="${item.numero}" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
         <input type="checkbox" id='${item.id}' class="modifCheck" /> 
       </td>
       `;
     allCargs?.appendChild(row);
-    // Select the status cell
+
+    //------------------BOUTON CHANGEMENT STATUS CARGAISON
     const statusCell = row.querySelector(
       "td:nth-child(8)"
     ) as HTMLTableCellElement;
-
     // Add click event listener to the status cell
     statusCell.addEventListener("click", () => {
       if (statusCell.textContent === "Ferme") {
@@ -468,8 +548,30 @@ function renderData(data: any[]) {
         statusCell.style.color = getStatusColor("Ferme");
       }
     });
+    const cargStatusBtn = document.querySelectorAll(
+      ".cargStatus"
+    ) as NodeListOf<HTMLTableRowElement>;
+    cargStatusBtn.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        setUpStatus(target.id);
+      });
+    });
+
+    renderPagination(data.length);
   });
-  renderPagination(data.length);
+  // let my_modal_5:any;
+  //--------------------BOUTON AFFICHAGE DÉTAILS CARGAISON:
+  const modifBtn = document.querySelectorAll(
+    ".modifBtn"
+  ) as NodeListOf<HTMLButtonElement>;
+  modifBtn.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const target = e.target as HTMLButtonElement;
+      showCargInfos(target.id);
+      my_modal_5.showModal();
+    });
+  });
 }
 
 function renderPagination(totalItems: number) {
@@ -708,7 +810,7 @@ async function fetchItems2(): Promise<any[]> {
     return [];
   }
 }
-async function updateCargaisons(cargaison): Promise<void> {
+async function updateCargaisons(cargaison: any): Promise<void> {
   try {
     const response = await fetch(
       `http://localhost:3000/cargaisons/${cargaison.id}`,
@@ -725,6 +827,7 @@ async function updateCargaisons(cargaison): Promise<void> {
     console.error("Error updating cargaisons:", error);
   }
 }
+//
 async function addColis(numero: string, nouveauColis: any): Promise<void> {
   try {
     const cargaisons = await fetchItems2();
@@ -741,11 +844,6 @@ async function addColis(numero: string, nouveauColis: any): Promise<void> {
     console.error("Error adding colis:", error);
   }
 }
-
-const newColis = {
-  design: "tomate",
-  prix: 200,
-};
 // addColis("3-ui", newColis)
 
 // async function addColis(numero:string, nouveauColis:any){
@@ -972,11 +1070,11 @@ addProdForm.addEventListener("submit", (e) => {
     // console.log(addedProduct);
     chooseCargBtn.style.display = "block";
 
-    let comapreType = cargaisonProduit.value;
+    let compareType = cargaisonProduit.value;
 
     async function displayItems() {
       const items = await fetchItems();
-      const filteredCarg = items.filter((item) => item.type === comapreType);
+      const filteredCarg = items.filter((item) => item.type === compareType);
 
       const container = document.getElementById("container");
 
@@ -996,7 +1094,7 @@ addProdForm.addEventListener("submit", (e) => {
       btnCarg.forEach((btn) => {
         btn.addEventListener("click", (e) => {
           const target = e.target as HTMLButtonElement;
-          console.log(target.id);
+          // console.log(target.id);
           addColis(target.id, product);
           try {
             const addedProduct = newProduit(product);

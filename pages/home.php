@@ -61,9 +61,9 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
             </svg>
           </div>
           <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <li><a href="index.php?page=home">Cargaisons</a></li>
             <li><a href="index.php?page=produits">Listes des colis</a></li>
             <li><a href="#">Archives</a></li>
-            <li><a href="#">Update</a></li>
           </ul>
         </div>
 
@@ -367,7 +367,7 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
             </h2>
             <div id="container">
             </div>
-            
+
             <!-- <div class="card w-96 bg-base-100 shadow-xl">
               
             </div> -->
@@ -380,6 +380,53 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
           </div>
         </dialog>
         <!----------------------------------------CHOOSE PRODUCT'S CARGAISON BOX END-------------------------------------->
+
+        <!----------------------------------------CHOW CARGAISON DETAILS START-------------------------------------->
+        <button style="display:none" class="btn" onclick="my_modal_5.showModal()">open modal</button>
+        <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+          <div class="modal-box">
+            <!-- <p class="py-4">Press ESC key or click the button below to close</p> -->
+            
+            <!-- <h3 class="font-bold text-lg">INFORMATIONS CARGAISON</h3> -->
+            <div class="infosColis">
+              <div>
+                <p class="typeInfo">Type cargaison:</p>
+                <p class="poidsInfo">Poids:</p>
+                <p class="prodInfo">Nbr Colis:</p>
+                <p class="montantInfo">Montant:</p>
+              </div>
+              <div>
+                <hr class="separator">
+              </div>
+              <div>
+                <p class="date1Info">Date départ:</p>
+                <p class="date2Info">Date d'arrivée:</p>
+                <p class="zone1Info">Lieu départ:</p>
+                <p class="zone2Info">Destination:</p>
+              </div>
+              <div>
+                <hr class="separator">
+              </div>
+              <div>
+                <p class="stateInfo">Etat:</p>
+                <p class="progressInfo">Progression:</p>
+                <!-- <p class="zone1Info">Lieu départ</p>
+                <p class="zone2Info">Destination</p> -->
+              </div>              
+              </div>
+            <div class="modal-action"> 
+            <form method="dialog">
+                <!-- if there is a button in form, it will close the modal -->
+                <button class="btn closeCargInfos">Fermer</button>
+              </form>
+            </div>
+          
+          </div>
+        </dialog>
+
+        <!----------------------------------------CHOW CARGAISON DETAILS END-------------------------------------->
+
+
         <!---------------------------------------OPEN & CLOSE MODALS END-------------------------------->
       </div>
       <div class="navbar-end">
@@ -405,7 +452,7 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
     </div>
     <!---------------------------NAVBAR END------------------------------ -->
 
-    <!---------------------------LISTE CARGAISONS START-------------------------------->
+    <!---------------------------LISTE TYPES CARGAISONS START-------------------------------->
     <div class="flex flex-row justify-evenly">
       <details class="collapse bg-base-200">
         <summary class="collapse-title text-xl font-medium">
@@ -555,7 +602,12 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
           </div>
         </div>
       </details>
+      <!--  -->
+
+
+      <!--  -->
     </div>
+    <!---------------------------LISTE TYPES CARGAISONS END------------------------------ -->
 
 
     <!-------------------------------------------SEARCH BAR START---------------------------->
@@ -628,8 +680,10 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
               <?php echo htmlspecialchars($cargaison["progression"]) ?>
             </td>
             <td>
-              <button
-                class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Modifier</button>
+              <button id=<?php $cargaison["id"] ?>
+                class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4
+                focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600
+                dark:hover:bg-red-700 dark:focus:ring-red-900">Modifier</button>
               <input type="checkbox" class="modifCheck">
             </td>
           </tr>
@@ -646,8 +700,6 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
     </div>
 
     <!-- AFFICHAGES TOUTES CARGAISONS END----->
-
-    <!---------------------------LISTE CARGAISONS END------------------------------ -->
 
     <!---------------------------PAGINATION START------------------------------ -->
     <div class="join paginationDiv" style="position: relative; left: 70%">
