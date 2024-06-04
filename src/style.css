@@ -118,3 +118,17 @@ width: 20vw;
     font-size: 1.5rem;
     margin: 5px;
 }
+
+.progressUpdateError{
+    margin-top: 15px;
+    /* display: none; */
+    color: tomato;
+    font-weight: 900; 
+    font-size: 1.3rem;
+}
+
+.updateProgressBox{
+ border: solid 4px white;
+ border-radius: 12px;
+ margin-top: 20px;
+}

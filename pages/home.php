@@ -407,11 +407,21 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
               <div>
                 <hr class="separator">
               </div>
-              <div>
+              <div class="" style="margin-top:30px;">
                 <p class="stateInfo">Etat:</p>
                 <p class="progressInfo">Progression:</p>
-                <!-- <p class="zone1Info">Lieu départ</p>
-                <p class="zone2Info">Destination</p> -->
+                
+                <div class="updateProgressBox">
+                  <label for="boxTitle" style="margin-bottom:20px;font-size:1.2rem;color:green;padding:20px">Changer status: </label> <br>
+                  <select class="selectProgress" id="boxTitle">
+                    <option disabled selected>MAJ Progression</option>
+                    <!-- <option disabled selected="En attente">En Attente</option> -->
+                    <option value="en cours">En Cours</option>
+                    <option value="arrivee">Arrivée</option>
+                    <option value="retard">En retard</option>
+                  </select> 
+                  <h3 class="progressUpdateError"></h3>
+                </div>
               </div>              
               </div>
             <div class="modal-action"> 
@@ -693,10 +703,10 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
       <tbody id="cargaison-body">
         <!-- Les données seront insérées ici par JavaScript -->
       </tbody>
-      <div class="pagination">
+      <!-- <div class="pagination">
         <button id="prev-page">Précédent</button>
         <button id="next-page">Suivant</button>
-      </div>
+      </div> -->
     </div>
 
     <!-- AFFICHAGES TOUTES CARGAISONS END----->

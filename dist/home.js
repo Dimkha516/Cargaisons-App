@@ -339,6 +339,18 @@ function getStatusColor(status) {
             return "yellow";
     }
 }
+function getProgressColor(status) {
+    switch (status.toLowerCase()) {
+        case "En attent":
+            return "red";
+        case "en cours":
+            return "green";
+        case "retard":
+            return "orange";
+        default:
+            return "yellow";
+    }
+}
 async function fetchData() {
     const response = await fetch("http://localhost:3000/cargaisons");
     return await response.json();
@@ -368,7 +380,31 @@ function filterData(data, searchTerm) {
     });
 }
 //--------------------------MODIFICATION STATUS CARGAISON:------------------------------
-async function updateCargStatus(cargaison) {
+async function setUpStatus(id) {
+    try {
+        const cargaison = await fetchItems2();
+        const cargToUpdate = cargaison.find((cargaison) => cargaison.id === id);
+        if (cargToUpdate) {
+            // if (cargToUpdate.progression === "En attente") {
+            if (cargToUpdate.status === "Ferme") {
+                cargToUpdate.status = "Ouvert";
+                cargToUpdate.textContent = "Ouvert";
+                await updateCargaisons(cargToUpdate);
+            }
+            else {
+                cargToUpdate.status = "Ferme";
+                cargToUpdate.textContent = "Ferme";
+                await updateCargaisons(cargToUpdate);
+            }
+        }
+    }
+    catch (error) {
+        //
+        console.error("Error updating status:", error);
+    }
+}
+//------------------------------------------------------------------------------------------------------
+async function updateCargaisons2(cargaison) {
     try {
         const response = await fetch(`http://localhost:3000/cargaisons/${cargaison.id}`, {
             method: "PUT",
@@ -383,25 +419,77 @@ async function updateCargStatus(cargaison) {
         console.error("Error updating cargaisons:", error);
     }
 }
-async function setUpStatus(id) {
+//--------------------------MODIFICATION PROGRESSION CARGAISON:------------------------------
+async function setUpProgress(id) {
     try {
-        const cargaison = await fetchItems2();
-        const cargToUpdate = cargaison.find((cargaison) => cargaison.id === id);
-        if (cargToUpdate) {
-            if (cargToUpdate.status === "Ferme") {
-                cargToUpdate.status = "Ouvert";
+        const data = await fetchItems2();
+        const selectedCarg = data.filter((item) => item.numero === id);
+        console.log(selectedCarg);
+        const selectProgressList = document.querySelector(".selectProgress");
+        const progressUpdateError = document.querySelector(".progressUpdateError");
+        selectProgressList.addEventListener("change", async (e) => {
+            const target = e.target;
+            const selectedOption = target.value;
+            // METHODE 1:
+            if (selectedCarg[0].status === "Ouvert") {
+                if (selectedOption === "en cours") {
+                    progressUpdateError.textContent =
+                        "Impossible de mettre  en cours une cargaison ouverte";
+                }
+                else if (selectedOption === "arrivee") {
+                    progressUpdateError.textContent =
+                        "Impossible. Cette cargaison est encore ouverte";
+                }
+                else if (selectedOption === "retard") {
+                    progressUpdateError.textContent =
+                        "Impossible de mettre en retard une cargaison encore ouverte";
+                }
+                else {
+                    progressUpdateError.textContent = "";
+                    selectedCarg[0].progression = selectedOption;
+                    updateCargaisons2(selectedCarg[0]);
+                    console.log(selectedCarg[0]);
+                }
             }
-            else {
-                cargToUpdate.status = "Ferme";
+            if (selectedCarg[0].status === "Ferme") {
+                if (selectedCarg[0].progression === "En attente") {
+                    if (selectedOption === "arrivee") {
+                        progressUpdateError.textContent =
+                            "Une cargaison en attente doit passer en cours d'abord";
+                    }
+                    else {
+                        progressUpdateError.textContent = "";
+                        selectedCarg[0].progression = selectedOption;
+                        updateCargaisons2(selectedCarg[0]);
+                        console.log(selectedCarg[0]);
+                    }
+                }
             }
-            console.log(cargToUpdate.status);
-        }
+            // METHODE 2:
+            // if (selectedOption === "en cours") {
+            //   if (selectedCarg[0].status === "Ouvert") {
+            //     progressUpdateError.textContent =
+            //       "Cette cargaison est actuellement ouverte. Fermez la d'abord";
+            //   } else {
+            //     progressUpdateError.textContent = "";
+            //     selectedCarg[0].progression = selectedOption;
+            //     updateCargaisons2(selectedCarg[0]);
+            //     showAllCargs();
+            //     // console.log(selectedCarg[0]);
+            //   }
+            // }
+            // if (selectedOption === "arrivee") {
+            // }
+            // if (selectedOption === "retard") {
+            // }
+        });
     }
     catch (error) {
         //
         console.error("Error updating status:", error);
     }
 }
+// setUpProgress("5eea");
 //------------------------------------------------------------------------------------------------------
 //--------------------------FONCTION POUR AFFICHER DÉTAILS D'UNE CARGAISON------------------------------
 async function showCargInfos(id) {
@@ -417,7 +505,7 @@ async function showCargInfos(id) {
     const zone2Info = document.querySelector(".zone2Info");
     const stateInfo = document.querySelector(".stateInfo");
     const progressInfo = document.querySelector(".progressInfo");
-    //--------------------------------------------------- 
+    //---------------------------------------------------
     const datas = await fetchItems2();
     const selectedCarg = datas.filter((item) => item.numero === id);
     typeInfo.textContent += ` ${selectedCarg[0].type}`;
@@ -430,9 +518,8 @@ async function showCargInfos(id) {
     zone2Info.textContent += ` ${selectedCarg[0].destination}`;
     stateInfo.textContent += ` ${selectedCarg[0].status}`;
     progressInfo.textContent += ` ${selectedCarg[0].progression}`;
-    // typeInfo.textContent += `${selectedCarg.numero}`; 
+    // typeInfo.textContent += `${selectedCarg.numero}`;
 }
-//------------------------------------------------------------------------------------------------------
 function renderData(data) {
     const allCargs = document.querySelector(".allCargs");
     allCargs.innerHTML = "";
@@ -442,6 +529,7 @@ function renderData(data) {
     paginateData.forEach((item) => {
         const row = document.createElement("tr");
         const statusColor = getStatusColor(item.status);
+        const progressColor = getProgressColor(item.progression);
         row.innerHTML = `
       <th class="text-base">${item.numero}</th>
       <td class="text-base">${item.type}</td>
@@ -450,14 +538,17 @@ function renderData(data) {
       <td class="text-base">${item.destination}</td>
       <td class="text-base">${item.montant} Fr</td>
       <td class="text-base">${item.colis.length}</td>
-      <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
-      <td class="text-base">${item.progression}</td>
+      <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.progression === "En attente" || item.progression === "retard" ? item.status : "-"}
+    </td>
+      <td class="cargProgress text-base" id=${item.id} style="color: ${progressColor}">${item.progression}</td>
       <td class="text-base">
         <button id="${item.numero}" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
         <input type="checkbox" id='${item.id}' class="modifCheck" /> 
       </td>
       `;
         allCargs?.appendChild(row);
+        renderPagination(data.length);
+        // <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
         //------------------BOUTON CHANGEMENT STATUS CARGAISON
         const statusCell = row.querySelector("td:nth-child(8)");
         // Add click event listener to the status cell
@@ -471,16 +562,15 @@ function renderData(data) {
                 statusCell.style.color = getStatusColor("Ferme");
             }
         });
-        const cargStatusBtn = document.querySelectorAll(".cargStatus");
-        cargStatusBtn.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const target = e.target;
-                setUpStatus(target.id);
-            });
-        });
-        renderPagination(data.length);
     });
-    // let my_modal_5:any;
+    const cargStatusBtn = document.querySelectorAll(".cargStatus");
+    cargStatusBtn.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const target = e.target;
+            // console.log(target.id);
+            setUpStatus(target.id);
+        });
+    });
     //--------------------BOUTON AFFICHAGE DÉTAILS CARGAISON:
     const modifBtn = document.querySelectorAll(".modifBtn");
     modifBtn.forEach((btn) => {
@@ -488,8 +578,18 @@ function renderData(data) {
             const target = e.target;
             showCargInfos(target.id);
             my_modal_5.showModal();
+            setUpProgress(target.id);
         });
     });
+    //------------------BOUTON CHANGEMENT PROGRESSION CARGAISON:
+    // const cargProgress = document.querySelectorAll(".cargProgress") as NodeListOf<HTMLElement>
+    // cargProgress.forEach((progress) => {
+    //   progress.addEventListener("click", (e) => {
+    //     const target = e.target as HTMLElement;
+    //     setUpProgress(target.id);
+    //     console.log(target.id);
+    //   })
+    // })
 }
 function renderPagination(totalItems) {
     const pagination = document.querySelector(".paginationDiv");

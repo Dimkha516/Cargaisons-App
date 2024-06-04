@@ -9,7 +9,7 @@ include_once "../pages/" .$currentPage . ".php";
 // MAP
 
 
-//-------NOUVELLES FONCTIONALITÉS POUR LUNDI 03/05/2024😢
+//
 // Mettre carg fermée en cours:
 
 //  Déclarer cargaison comme perdue => tous ces prod seront perdus.
@@ -18,3 +18,7 @@ include_once "../pages/" .$currentPage . ".php";
 
 //  Déclarer produit d'une cargaison arrivée comme perdue.
 
+
+//1: GÉNÉRER RECU ET L'ENVOYER AU DESTINATAIRE PAR MAIL LORS DE LA CRÉATION DE COLIS
+//2: Envoyer un msg au destinataire avec le code du colis
+//3: Archiver produit d'une cargaison arrivée 

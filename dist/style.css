@@ -4102,6 +4102,20 @@ details.collapse summary::-webkit-details-marker {
   margin: 5px;
 }
 
+.progressUpdateError{
+  margin-top: 15px;
+  /* display: none; */
+  color: tomato;
+  font-weight: 900;
+  font-size: 1.3rem;
+}
+
+.updateProgressBox{
+  border: solid 4px white;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
 .hover\:bg-blue-800:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(30 64 175 / var(--tw-bg-opacity));

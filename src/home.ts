@@ -382,7 +382,20 @@ function getStatusColor(status: string): string {
     case "ferme":
       return "red";
     case "ouvert":
+      return "green"
+    default:
+      return "yellow";
+  }
+}
+
+function getProgressColor(status: string): string {
+  switch (status.toLowerCase()) {
+    case "En attent":
+      return "red";
+    case "en cours":
       return "green";
+    case "retard":
+      return "orange"
     default:
       return "yellow";
   }
@@ -425,7 +438,29 @@ function filterData(data: any[], searchTerm: string) {
 }
 
 //--------------------------MODIFICATION STATUS CARGAISON:------------------------------
-async function updateCargStatus(cargaison: any): Promise<void> {
+async function setUpStatus(id: string): Promise<void> {
+  try {
+    const cargaison = await fetchItems2();
+    const cargToUpdate = cargaison.find((cargaison) => cargaison.id === id);
+    if (cargToUpdate) {
+      // if (cargToUpdate.progression === "En attente") {
+      if (cargToUpdate.status === "Ferme") {
+        cargToUpdate.status = "Ouvert";
+        cargToUpdate.textContent = "Ouvert";
+        await updateCargaisons(cargToUpdate);
+      } else {
+        cargToUpdate.status = "Ferme";
+        cargToUpdate.textContent = "Ferme";
+        await updateCargaisons(cargToUpdate);
+      }
+    }
+  } catch (error) {
+    //
+    console.error("Error updating status:", error);
+  }
+}
+//------------------------------------------------------------------------------------------------------
+async function updateCargaisons2(cargaison: any): Promise<void> {
   try {
     const response = await fetch(
       `http://localhost:3000/cargaisons/${cargaison.id}`,
@@ -442,28 +477,86 @@ async function updateCargStatus(cargaison: any): Promise<void> {
     console.error("Error updating cargaisons:", error);
   }
 }
-async function setUpStatus(id: string): Promise<void> {
+//--------------------------MODIFICATION PROGRESSION CARGAISON:------------------------------
+async function setUpProgress(id: string): Promise<void> {
   try {
-    const cargaison = await fetchItems2();
-    const cargToUpdate = cargaison.find((cargaison) => cargaison.id === id);
-    if (cargToUpdate) {
-      if (cargToUpdate.status === "Ferme") {
-        cargToUpdate.status = "Ouvert";
-      } else {
-        cargToUpdate.status = "Ferme";
+    const data = await fetchItems2();
+    const selectedCarg = data.filter((item) => item.numero === id);
+    console.log(selectedCarg);
+    const selectProgressList = document.querySelector(
+      ".selectProgress"
+    ) as HTMLSelectElement;
+    const progressUpdateError = document.querySelector(
+      ".progressUpdateError"
+    ) as HTMLElement;
+    selectProgressList.addEventListener("change", async (e) => {
+      const target = e.target as HTMLSelectElement;
+      const selectedOption = target.value;
+
+      // METHODE 1:
+      if (selectedCarg[0].status === "Ouvert") {
+        if (selectedOption === "en cours") {
+          progressUpdateError.textContent =
+            "Impossible de mettre  en cours une cargaison ouverte";
+        } else if (selectedOption === "arrivee") {
+          progressUpdateError.textContent =
+            "Impossible. Cette cargaison est encore ouverte";
+        } else if (selectedOption === "retard") {
+          progressUpdateError.textContent =
+            "Impossible de mettre en retard une cargaison encore ouverte";
+        } else {
+          progressUpdateError.textContent = "";
+          selectedCarg[0].progression = selectedOption;
+          updateCargaisons2(selectedCarg[0]);
+          console.log(selectedCarg[0]);
+        }
       }
-      console.log(cargToUpdate.status);
-    }
+      if (selectedCarg[0].status === "Ferme") {
+        if (selectedCarg[0].progression === "En attente") {
+          if (selectedOption === "arrivee") {
+            progressUpdateError.textContent =
+              "Une cargaison en attente doit passer en cours d'abord";
+          } else {
+            progressUpdateError.textContent = "";
+            selectedCarg[0].progression = selectedOption;
+            updateCargaisons2(selectedCarg[0]);
+            console.log(selectedCarg[0]);
+          }
+        }
+      }
+
+      // METHODE 2:
+      // if (selectedOption === "en cours") {
+      //   if (selectedCarg[0].status === "Ouvert") {
+      //     progressUpdateError.textContent =
+      //       "Cette cargaison est actuellement ouverte. Fermez la d'abord";
+      //   } else {
+      //     progressUpdateError.textContent = "";
+      //     selectedCarg[0].progression = selectedOption;
+      //     updateCargaisons2(selectedCarg[0]);
+      //     showAllCargs();
+      //     // console.log(selectedCarg[0]);
+      //   }
+      // }
+      // if (selectedOption === "arrivee") {
+      // }
+      // if (selectedOption === "retard") {
+      // }
+    });
   } catch (error) {
     //
     console.error("Error updating status:", error);
   }
 }
+// setUpProgress("5eea");
+
 //------------------------------------------------------------------------------------------------------
 
 //--------------------------FONCTION POUR AFFICHER DÉTAILS D'UNE CARGAISON------------------------------
 async function showCargInfos(id: string) {
-  const closeCargInfos = document.querySelector(".closeCargInfos") as HTMLButtonElement;
+  const closeCargInfos = document.querySelector(
+    ".closeCargInfos"
+  ) as HTMLButtonElement;
   //----------------------------------------------------
   const typeInfo = document.querySelector(".typeInfo") as HTMLElement;
   const poidsInfo = document.querySelector(".poidsInfo") as HTMLElement;
@@ -475,34 +568,27 @@ async function showCargInfos(id: string) {
   const zone2Info = document.querySelector(".zone2Info") as HTMLElement;
   const stateInfo = document.querySelector(".stateInfo") as HTMLElement;
   const progressInfo = document.querySelector(".progressInfo") as HTMLElement;
-  //--------------------------------------------------- 
+  //---------------------------------------------------
   const datas = await fetchItems2();
   const selectedCarg = datas.filter((item) => item.numero === id);
   typeInfo.textContent += ` ${selectedCarg[0].type}`;
-  poidsInfo.textContent += ` ${selectedCarg[0].poids} Kg`
-  prodInfo.textContent += ` ${selectedCarg[0].colis.length}`
-  montantInfo.textContent += ` ${selectedCarg[0].montant} Fr`
-  date1Info.textContent += `Le ${selectedCarg[0].depart}`
-  date2Info.textContent += `Le ${selectedCarg[0].arrivee}`
-  zone1Info.textContent += ` ${selectedCarg[0].lieu_depart  }`
-  zone2Info.textContent += ` ${selectedCarg[0].destination}`
-  stateInfo.textContent += ` ${selectedCarg[0].status}`
-  progressInfo.textContent += ` ${selectedCarg[0].progression}`
+  poidsInfo.textContent += ` ${selectedCarg[0].poids} Kg`;
+  prodInfo.textContent += ` ${selectedCarg[0].colis.length}`;
+  montantInfo.textContent += ` ${selectedCarg[0].montant} Fr`;
+  date1Info.textContent += `Le ${selectedCarg[0].depart}`;
+  date2Info.textContent += `Le ${selectedCarg[0].arrivee}`;
+  zone1Info.textContent += ` ${selectedCarg[0].lieu_depart}`;
+  zone2Info.textContent += ` ${selectedCarg[0].destination}`;
+  stateInfo.textContent += ` ${selectedCarg[0].status}`;
+  progressInfo.textContent += ` ${selectedCarg[0].progression}`;
 
-
-
-
-
-
-
-  
-  
-  
-  
-  // typeInfo.textContent += `${selectedCarg.numero}`; 
-
+  // typeInfo.textContent += `${selectedCarg.numero}`;
 }
 //------------------------------------------------------------------------------------------------------
+
+declare const my_modal_5: {
+  showModal: () => void;
+};
 
 function renderData(data: any[]) {
   const allCargs = document.querySelector(
@@ -517,6 +603,7 @@ function renderData(data: any[]) {
   paginateData.forEach((item) => {
     const row = document.createElement("tr") as HTMLTableRowElement;
     const statusColor = getStatusColor(item.status);
+    const progressColor = getProgressColor(item.progression);
     row.innerHTML = `
       <th class="text-base">${item.numero}</th>
       <td class="text-base">${item.type}</td>
@@ -525,15 +612,23 @@ function renderData(data: any[]) {
       <td class="text-base">${item.destination}</td>
       <td class="text-base">${item.montant} Fr</td>
       <td class="text-base">${item.colis.length}</td>
-      <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
-      <td class="text-base">${item.progression}</td>
+      <td class="cargStatus text-base" id=${
+        item.id
+      } style="color: ${statusColor}; cursor:pointer">${
+      item.progression === "En attente" || item.progression === "retard" ? item.status : "-"
+    }
+    </td>
+      <td class="cargProgress text-base" id=${item.id} style="color: ${progressColor}">${item.progression}</td>
       <td class="text-base">
-        <button id="${item.numero}" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
+        <button id="${
+          item.numero
+        }" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
         <input type="checkbox" id='${item.id}' class="modifCheck" /> 
       </td>
       `;
     allCargs?.appendChild(row);
-
+    renderPagination(data.length);
+    // <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
     //------------------BOUTON CHANGEMENT STATUS CARGAISON
     const statusCell = row.querySelector(
       "td:nth-child(8)"
@@ -548,19 +643,19 @@ function renderData(data: any[]) {
         statusCell.style.color = getStatusColor("Ferme");
       }
     });
-    const cargStatusBtn = document.querySelectorAll(
-      ".cargStatus"
-    ) as NodeListOf<HTMLTableRowElement>;
-    cargStatusBtn.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const target = e.target as HTMLElement;
-        setUpStatus(target.id);
-      });
-    });
-
-    renderPagination(data.length);
   });
-  // let my_modal_5:any;
+
+  const cargStatusBtn = document.querySelectorAll(
+    ".cargStatus"
+  ) as NodeListOf<HTMLTableRowElement>;
+  cargStatusBtn.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      // console.log(target.id);
+      setUpStatus(target.id);
+    });
+  });
+
   //--------------------BOUTON AFFICHAGE DÉTAILS CARGAISON:
   const modifBtn = document.querySelectorAll(
     ".modifBtn"
@@ -570,8 +665,19 @@ function renderData(data: any[]) {
       const target = e.target as HTMLButtonElement;
       showCargInfos(target.id);
       my_modal_5.showModal();
+      setUpProgress(target.id);
     });
   });
+
+  //------------------BOUTON CHANGEMENT PROGRESSION CARGAISON:
+  // const cargProgress = document.querySelectorAll(".cargProgress") as NodeListOf<HTMLElement>
+  // cargProgress.forEach((progress) => {
+  //   progress.addEventListener("click", (e) => {
+  //     const target = e.target as HTMLElement;
+  //     setUpProgress(target.id);
+  //     console.log(target.id);
+  //   })
+  // })
 }
 
 function renderPagination(totalItems: number) {
