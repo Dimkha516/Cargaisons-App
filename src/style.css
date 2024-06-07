@@ -132,3 +132,56 @@ width: 20vw;
  border-radius: 12px;
  margin-top: 20px;
 }
+
+.items{
+    margin-top: 20px;
+}
+
+.itemsHeads{
+    background-color: teal;
+    color: tomato;
+    font-size: 900;
+}  
+
+.editProdBtn{
+    background-color: rgb(31, 102, 103);
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+    padding: 3px;
+    margin: 8px;
+    border-radius: 11px;
+}
+
+.updateProdModal{
+    height: 70vh;
+}
+
+.updateProdModal th{
+    background-color: aliceblue;
+    color: tomato;
+    border: solid 2px tomato;
+}
+
+.updateProdModal select, button{
+    font-size: 1.2rem;    
+}
+
+.updateProdModal select{
+    background-color: rgb(108, 107, 103);
+}
+
+.updateMessage{
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 900;
+    color: tomato;
+}
+
+.currentUpdatingProd{
+    color: brown;
+    margin: 20px;
+    font-size: 1.5rem;
+    font-weight: 900;
+}

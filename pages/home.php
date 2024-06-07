@@ -5,10 +5,24 @@
 <?php
 $json_data = file_get_contents('../Data/cargaisons.json');
 $cargaisons = json_decode($json_data, true)['cargaisons'];
+
+
+/*
+require 'sendEmail.php';  
+
+$clientEmail = 'dimkha516@gmail.com';
+$destinataireEmail = "dimkha516@gmail.com";
+$clientMessage = 'Colis livé';
+$recipientMessage = "un colis pour vous";
+
+$result = sendEmail($clientEmail, $destinataireEmail, $clientMessage, $recipientMessage);
+
+header('Content-Type: application/json');
+echo json_encode($result);
+*/ 
 ?>
-
-
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="../dist/style.css" rel="stylesheet" />
@@ -386,7 +400,7 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
         <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
           <div class="modal-box">
             <!-- <p class="py-4">Press ESC key or click the button below to close</p> -->
-            
+
             <!-- <h3 class="font-bold text-lg">INFORMATIONS CARGAISON</h3> -->
             <div class="infosColis">
               <div>
@@ -410,27 +424,28 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
               <div class="" style="margin-top:30px;">
                 <p class="stateInfo">Etat:</p>
                 <p class="progressInfo">Progression:</p>
-                
+
                 <div class="updateProgressBox">
-                  <label for="boxTitle" style="margin-bottom:20px;font-size:1.2rem;color:green;padding:20px">Changer status: </label> <br>
+                  <label for="boxTitle" style="margin-bottom:20px;font-size:1.2rem;color:green;padding:20px">Changer
+                    status: </label> <br>
                   <select class="selectProgress" id="boxTitle">
                     <option disabled selected>MAJ Progression</option>
                     <!-- <option disabled selected="En attente">En Attente</option> -->
                     <option value="en cours">En Cours</option>
                     <option value="arrivee">Arrivée</option>
                     <option value="retard">En retard</option>
-                  </select> 
+                  </select>
                   <h3 class="progressUpdateError"></h3>
                 </div>
-              </div>              
               </div>
-            <div class="modal-action"> 
-            <form method="dialog">
+            </div>
+            <div class="modal-action">
+              <form method="dialog">
                 <!-- if there is a button in form, it will close the modal -->
                 <button class="btn closeCargInfos">Fermer</button>
               </form>
             </div>
-          
+
           </div>
         </dialog>
 
@@ -646,7 +661,7 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
     <div class="overflow-x-auto">
       <table class="table table-xs">
         <thead>
-          <tr>
+          <tr class="itemsHeads">
             <th class="text-2xl">Code</th>
             <th class="text-2xl">Type</th>
             <th class="text-2xl">Poids</th>
@@ -756,3 +771,43 @@ $cargaisons = json_decode($json_data, true)['cargaisons'];
   </div>
   <script type="module" src="../dist/home.js"></script>
 </body>
+
+<?php
+require 'vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+$mail = new PHPMailer(true);
+
+try {
+  // COnfiguration du serveur SMTP:
+  $mail->isSMTP();
+  $mail->Host = 'smtp.gmail.com';             // Serveur SMTP de Gmail
+  $mail->SMTPAuth = true;                         // Activer l'authentification SMTP
+  $mail->Username = 'votre.email@gmail.com';      // Votre adresse email Gmail
+  $mail->Password = 'mot_de_passe_application';   // Votre mot de passe d'application Gmail
+  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Activer le cryptage TLS
+  $mail->Port = 587;                          // Port SMTP
+
+  // Destinataires
+  $mail->setFrom('votre.email@gmail.com', 'Votre Nom');
+  $mail->addAddress('destinataire@example.com', 'Nom du Destinataire'); // Ajouter un destinataire
+  // Vous pouvez ajouter plus de destinataires avec $mail->addAddress()
+
+  // Contenu de l'email
+  $mail->isHTML(true);                                // Définir le format de l'email en HTML
+  $mail->Subject = 'Voici le sujet de l\'email';
+  $mail->Body = 'Ceci est le contenu de l\'email <b>en HTML!</b>';
+  $mail->AltBody = 'Ceci est le contenu de l\'email en texte brut pour les clients non-HTML';
+
+  // Envoyer l'email
+  $mail->send();
+  echo 'L\'email a été envoyé avec succès';
+
+} catch (Exception $e) {
+  // echo "Echec d'envoi de mail: {$email->ErrorInfos}";
+  echo "Echec de l'envoi d'email";
+}
+
+?>

@@ -382,7 +382,7 @@ function getStatusColor(status: string): string {
     case "ferme":
       return "red";
     case "ouvert":
-      return "green"
+      return "green";
     default:
       return "yellow";
   }
@@ -395,7 +395,7 @@ function getProgressColor(status: string): string {
     case "en cours":
       return "green";
     case "retard":
-      return "orange"
+      return "orange";
     default:
       return "yellow";
   }
@@ -446,12 +446,14 @@ async function setUpStatus(id: string): Promise<void> {
       // if (cargToUpdate.progression === "En attente") {
       if (cargToUpdate.status === "Ferme") {
         cargToUpdate.status = "Ouvert";
-        cargToUpdate.textContent = "Ouvert";
+        // cargToUpdate.textContent = "Ouvert";
         await updateCargaisons(cargToUpdate);
+        location.reload();
       } else {
         cargToUpdate.status = "Ferme";
         cargToUpdate.textContent = "Ferme";
         await updateCargaisons(cargToUpdate);
+        location.reload();
       }
     }
   } catch (error) {
@@ -481,7 +483,7 @@ async function updateCargaisons2(cargaison: any): Promise<void> {
 async function setUpProgress(id: string): Promise<void> {
   try {
     const data = await fetchItems2();
-    const selectedCarg = data.filter((item) => item.numero === id);
+    const selectedCarg = data.filter((item) => item.id === id);
     console.log(selectedCarg);
     const selectProgressList = document.querySelector(
       ".selectProgress"
@@ -524,24 +526,6 @@ async function setUpProgress(id: string): Promise<void> {
           }
         }
       }
-
-      // METHODE 2:
-      // if (selectedOption === "en cours") {
-      //   if (selectedCarg[0].status === "Ouvert") {
-      //     progressUpdateError.textContent =
-      //       "Cette cargaison est actuellement ouverte. Fermez la d'abord";
-      //   } else {
-      //     progressUpdateError.textContent = "";
-      //     selectedCarg[0].progression = selectedOption;
-      //     updateCargaisons2(selectedCarg[0]);
-      //     showAllCargs();
-      //     // console.log(selectedCarg[0]);
-      //   }
-      // }
-      // if (selectedOption === "arrivee") {
-      // }
-      // if (selectedOption === "retard") {
-      // }
     });
   } catch (error) {
     //
@@ -570,21 +554,51 @@ async function showCargInfos(id: string) {
   const progressInfo = document.querySelector(".progressInfo") as HTMLElement;
   //---------------------------------------------------
   const datas = await fetchItems2();
-  const selectedCarg = datas.filter((item) => item.numero === id);
-  typeInfo.textContent += ` ${selectedCarg[0].type}`;
-  poidsInfo.textContent += ` ${selectedCarg[0].poids} Kg`;
-  prodInfo.textContent += ` ${selectedCarg[0].colis.length}`;
-  montantInfo.textContent += ` ${selectedCarg[0].montant} Fr`;
-  date1Info.textContent += `Le ${selectedCarg[0].depart}`;
-  date2Info.textContent += `Le ${selectedCarg[0].arrivee}`;
-  zone1Info.textContent += ` ${selectedCarg[0].lieu_depart}`;
-  zone2Info.textContent += ` ${selectedCarg[0].destination}`;
-  stateInfo.textContent += ` ${selectedCarg[0].status}`;
-  progressInfo.textContent += ` ${selectedCarg[0].progression}`;
+  const selectedCarg = datas.filter((item) => item.id === id);
 
+  if (selectedCarg.length === 0) {
+    console.log("cargaison unfounded");
+    return;
+  }
+  const carg = selectedCarg[0];
+  typeInfo.innerHTML =
+  `<h2 class="title">Type de cargaison: ${carg.type}</h2>`
+
+  prodInfo.innerHTML = 
+  `<h2 class="title">Nombre de colis: ${carg.colis.length}</h2>`
+
+  montantInfo.innerHTML = 
+  `<h2 class="title">Montant: ${carg.montant} Fr</h2>`
+  
+  date1Info.innerHTML =
+`<h2 class="title">Date départ: ${carg.depart}</h2>`
+  
+date2Info.innerHTML = `
+<h2 class="title">Date d'arrivée: ${carg.arrivee}</h2>
+`
+  zone1Info.innerHTML = `
+  <h2 class="title">Lieu départ: ${carg.lieu_depart}</h2>
+  `
+  zone2Info.innerHTML = `
+  <h2 class="title">Destination: ${carg.destination}</h2>
+  `
+  stateInfo.innerHTML = `
+  <h2 class="title">Status: ${carg.status}</h2>
+  `
+  progressInfo.innerHTML = `
+  <h2 class="title">Progression: ${carg.progression}</h2>
+  `
   // typeInfo.textContent += `${selectedCarg.numero}`;
 }
 //------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------FONCTION------------------------------------------:
+function getStatus(item: any) {
+  return item.progression === "En attente" || item.progression === "retard"
+    ? item.status
+    : "-";
+}
+//---------------------------------- -------------------------------------------------------------
 
 declare const my_modal_5: {
   showModal: () => void;
@@ -614,21 +628,27 @@ function renderData(data: any[]) {
       <td class="text-base">${item.colis.length}</td>
       <td class="cargStatus text-base" id=${
         item.id
-      } style="color: ${statusColor}; cursor:pointer">${
-      item.progression === "En attente" || item.progression === "retard" ? item.status : "-"
-    }
-    </td>
-      <td class="cargProgress text-base" id=${item.id} style="color: ${progressColor}">${item.progression}</td>
+      } style="color: ${statusColor}; cursor:pointer">
+    ${getStatus(item)}
+  </td>
+      <td class="cargProgress text-base" id=${
+        item.id
+      } style="color: ${progressColor}">${item.progression}</td>
       <td class="text-base">
-        <button id="${
-          item.numero
-        }" class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
+        <button id=${item.id} class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
         <input type="checkbox" id='${item.id}' class="modifCheck" /> 
       </td>
+      
+      <td class="text-base">
+        <button>Aperçu</button>
+      </td>
       `;
+    // <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
+    //   <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.progression === "En attente" || item.progression === "retard" ? item.status : "-"}
+    // </td>
     allCargs?.appendChild(row);
     renderPagination(data.length);
-    // <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>
+
     //------------------BOUTON CHANGEMENT STATUS CARGAISON
     const statusCell = row.querySelector(
       "td:nth-child(8)"
@@ -857,6 +877,7 @@ function isValidEmail(email: string): boolean {
 //-------------------AFFICHAGE DONNÉES POUR SÉLECTION DE LA CARGAISON POUR LE COLIS AJOUTÉ:
 
 interface Item {
+  status: string;
   numero: string;
   type: string;
   depart: string;
@@ -907,15 +928,18 @@ function createCard(item: Item): HTMLElement {
 async function fetchItems2(): Promise<any[]> {
   try {
     const response = await fetch("http://localhost:3000/cargaisons");
+ 
     if (!response.ok) {
       throw new Error("Error fetching cargaisons");
     }
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching cargaisons:", error);
     return [];
   }
 }
+fetchItems2();
 async function updateCargaisons(cargaison: any): Promise<void> {
   try {
     const response = await fetch(
@@ -1180,7 +1204,7 @@ addProdForm.addEventListener("submit", (e) => {
 
     async function displayItems() {
       const items = await fetchItems();
-      const filteredCarg = items.filter((item) => item.type === compareType);
+      const filteredCarg = items.filter((item) => item.type === compareType && item.status === "Ouvert");
 
       const container = document.getElementById("container");
 
