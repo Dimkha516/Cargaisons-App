@@ -185,3 +185,46 @@ width: 20vw;
     font-size: 1.5rem;
     font-weight: 900;
 }
+
+.loginPage{
+    position: relative;
+    top: 50px;
+    display: grid;
+    grid-template-columns: 40% 60%;
+    margin: 0 auto;
+    text-align: center;
+    width: 80%;
+}
+
+.clientSpace{
+    padding: 8px;
+    margin: 15px;
+    border: solid 2px white;
+    border-radius: 12px;
+}
+.clientSpace{
+    padding: 8px;
+    margin: 15px;
+    /* border: solid 2px white;
+    border-radius: 12px; */
+}
+
+.adminSpace h1{
+padding: 15px;
+    color: rgb(255, 71, 255);
+    font-weight: 900;
+    font-size: 1.3rem;
+}
+
+.clientSpace h1{
+    padding: 15px;
+    color: rgb(71, 255, 154);
+    font-weight: 900;
+    font-size: 1.3rem;
+}
+
+.error{
+    color: tomato;
+    font-size: 1.3rem;
+    font-weight: 900;    
+}

@@ -446,12 +446,12 @@ async function setUpStatus(id: string): Promise<void> {
       // if (cargToUpdate.progression === "En attente") {
       if (cargToUpdate.status === "Ferme") {
         cargToUpdate.status = "Ouvert";
-        // cargToUpdate.textContent = "Ouvert";
+        cargToUpdate.textContent = "Ouvert";
         await updateCargaisons(cargToUpdate);
         location.reload();
       } else {
         cargToUpdate.status = "Ferme";
-        cargToUpdate.textContent = "Ferme";
+        cargToUpdate.textContent = "Ferme";   
         await updateCargaisons(cargToUpdate);
         location.reload();
       }
@@ -541,6 +541,9 @@ async function showCargInfos(id: string) {
   const closeCargInfos = document.querySelector(
     ".closeCargInfos"
   ) as HTMLButtonElement;
+  closeCargInfos.addEventListener("click", () => {
+    location.reload();
+  })  
   //----------------------------------------------------
   const typeInfo = document.querySelector(".typeInfo") as HTMLElement;
   const poidsInfo = document.querySelector(".poidsInfo") as HTMLElement;
@@ -626,21 +629,14 @@ function renderData(data: any[]) {
       <td class="text-base">${item.destination}</td>
       <td class="text-base">${item.montant} Fr</td>
       <td class="text-base">${item.colis.length}</td>
-      <td class="cargStatus text-base" id=${
-        item.id
-      } style="color: ${statusColor}; cursor:pointer">
-    ${getStatus(item)}
+      <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; font-size:1.4rem ;cursor:pointer">${getStatus(item)}
   </td>
       <td class="cargProgress text-base" id=${
         item.id
-      } style="color: ${progressColor}">${item.progression}</td>
+      } style="color: ${progressColor}; font-size:1.4rem ;">${item.progression}</td>
       <td class="text-base">
         <button id=${item.id} class="modifBtn focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Détails</button>
         <input type="checkbox" id='${item.id}' class="modifCheck" /> 
-      </td>
-      
-      <td class="text-base">
-        <button>Aperçu</button>
       </td>
       `;
     // <td class="cargStatus text-base" id=${item.id} style="color: ${statusColor}; cursor:pointer">${item.status}</td>

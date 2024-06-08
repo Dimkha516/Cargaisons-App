@@ -65,6 +65,10 @@ const sendEmail = async (emailData) => {
     }
 };
 //--------------------------------FONCTION POUR MODIFIER PRODUIT--------------------
+const closeModal = document.querySelector(".closeModal");
+closeModal.addEventListener("click", () => {
+    location.reload();
+});
 async function updateProd(id) {
     const currentUpdatingProd = document.querySelector(".currentUpdatingProd");
     const productState = document.querySelector(".productState");
@@ -103,8 +107,8 @@ async function updateProd(id) {
                         const emailData = {
                             clientEmail: `${mailClient}`,
                             destinataireEmail: `${mailDestinataire}`,
-                            clientMessage: `Bonjour cher(e) client. Nous vous informons que votre colis ${prodToUpdate[0].code_colis} à été bien chargé et est en cours de transite.`,
-                            recipientMessage: `Bonjour cher(e) destinataire. Votre colis ${prodToUpdate[0].code_colis} est en cours de transite. Rendez vous sous peu pour le retrait. `,
+                            clientMessage: `Bonjour cher(e) client. Nous vous informons que votre colis ${prodToUpdate[0].code_colis} destiné à ${prodToUpdate[0].email_destinataire} à été bien chargé et est en cours de transite.`,
+                            recipientMessage: `Bonjour cher(e) destinataire. Votre colis ${prodToUpdate[0].code_colis} de la part de ${prodToUpdate[0].nom_client} est en cours de transite. Rendez vous sous peu pour le retrait. `,
                         };
                         sendEmail(emailData);
                         updateMessage.textContent = "MAJ colis réussie colis cours. Mail envoyé au client";

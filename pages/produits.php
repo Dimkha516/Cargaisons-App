@@ -39,7 +39,7 @@ $produits = json_decode($json_data, true)['produits'];
         <dialog id="my_modal_3" class="modal">
           <div class="modal-box  updateProdModal">
             <form method="dialog">
-              <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+              <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 closeModal">✕</button>
             </form>
             <!-- <h3 class="font-bold text-lg" style="text-decoration:underline; font-size:1.5rem"> Modification informations Colis</h3> -->
             <h3 class="currentUpdatingProd">🥡</h3>

@@ -12,8 +12,8 @@
       "depart": "2024-05-26",
       "arrivee": "2024-05-28",
       "progression": "en cours",
-      "status": "Ferme",
-      "textContent": "Ferme"
+      "status": "Ouvert",
+      "textContent": "Ouvert"
     },
     {
       "id": "5eea",
@@ -60,8 +60,8 @@
       "depart": "2024-05-26",
       "arrivee": "2024-05-30",
       "progression": "en cours",
-      "status": "Ferme",
-      "textContent": "Ferme"
+      "status": "Ouvert",
+      "textContent": "Ouvert"
     },
     {
       "id": "00b6",
@@ -75,7 +75,7 @@
       "depart": "2024-05-28",
       "arrivee": "2024-05-29",
       "progression": "retard",
-      "status": "Ouvert",
+      "status": "Ferme",
       "textContent": "Ferme"
     },
     {
@@ -122,8 +122,8 @@
       "depart": "2024-05-27",
       "arrivee": "2024-05-28",
       "progression": "retard",
-      "status": "Ferme",
-      "textContent": "Ferme"
+      "status": "Ouvert",
+      "textContent": "Ouvert"
     },
     {
       "id": "9475",
@@ -250,6 +250,39 @@
       "arrivee": "2024-05-31",
       "progression": "En attente",
       "status": "Ouvert"
+    },
+    {
+      "id": "7c58",
+      "numero": "62-tj",
+      "type": "terre",
+      "poids": "100",
+      "colis": [
+        {},
+        {
+          "code_colis": "4-fk",
+          "etat": "attente",
+          "type_produit": "alimentaire",
+          "voie": "terre",
+          "nombre_produit": "12",
+          "poids": "23",
+          "prix": 115000,
+          "nom_client": "Diarra",
+          "prenom_client": "Mbow",
+          "tel_client": "771234567",
+          "adress_client": "Rufisque",
+          "email_client": "abibucumba@gmail.com",
+          "email_destinataire": "dijamo11@gmail.com",
+          "tel_destinataire": "771234561"
+        }
+      ],
+      "montant": 500000,
+      "lieu_depart": "Londres",
+      "destination": "Royaume-Uni",
+      "depart": "2024-06-15",
+      "arrivee": "2024-06-20",
+      "progression": "en cours",
+      "status": "Ferme",
+      "textContent": "Ferme"
     }
   ],
   "produits": [
@@ -307,7 +340,7 @@
     {
       "id": "7d77",
       "code_colis": "66-tk",
-      "etat": "retard",
+      "etat": "en cours",
       "type_produit": "chimic",
       "voie": "mer",
       "nombre_produit": "12",
@@ -341,7 +374,7 @@
     {
       "id": "f6f0",
       "code_colis": "89-cx",
-      "etat": "attente",
+      "etat": "en cours",
       "type_produit": "cassable",
       "voie": "aire",
       "nombre_produit": "20",
@@ -388,6 +421,23 @@
       "email_client": "dimkha516@gmail.com",
       "email_destinataire": "dimkha516@gmail.com",
       "tel_destinataire": "787654321"
+    },
+    {
+      "id": "7ddd",
+      "code_colis": "4-fk",
+      "etat": "en cours",
+      "type_produit": "alimentaire",
+      "voie": "terre",
+      "nombre_produit": "12",
+      "poids": "23",
+      "prix": 115000,
+      "nom_client": "Diarra",
+      "prenom_client": "Mbow",
+      "tel_client": "771234567",
+      "adress_client": "Rufisque",
+      "email_client": "abibucumba@gmail.com",
+      "email_destinataire": "dijamo11@gmail.com",
+      "tel_destinataire": "771234561"
     }
   ]
 }

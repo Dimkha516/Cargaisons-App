@@ -1,7 +1,7 @@
 <?php
 // http://localhost:8089/Cargaisons-App/public/index.php
 
-$currentPage = isset($_GET["page"]) ? ($_GET["page"]) : 'home';
+$currentPage = isset($_GET["page"]) ? ($_GET["page"]) : 'login';
 include_once "../pages/" .$currentPage . ".php";
 
 //-----------MANQUANTS
