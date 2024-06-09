@@ -3141,6 +3141,17 @@ details.collapse summary::-webkit-details-marker {
   display: none;
 }
 
+.disconnectInput{
+  position: relative;
+  left: 100px;
+  color: tomato;
+  background-color: aliceblue;
+  font-weight: 900;
+  cursor: pointer;
+  font-size: 1.2rem;
+  border-radius: 12px;
+}
+
 .hover\:bg-blue-800:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(30 64 175 / var(--tw-bg-opacity));

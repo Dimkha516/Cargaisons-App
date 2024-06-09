@@ -6,6 +6,7 @@
 $json_data = file_get_contents('../Data/cargaisons.json');
 $cargaisons = json_decode($json_data, true)['cargaisons'];
 
+include_once("../functions/logout.php");
 
 /*
 require 'sendEmail.php';  
@@ -95,7 +96,10 @@ echo json_encode($result);
 
         <!-- BOUTON AJOUT PRODUIT -->
         <a href="#my_modal_8" class="btn btn-info text-2xl ml-8">+AJOUTER COLIS</a>
-
+        
+        <form method="post" class="deconnexionForm" target="_blank" onsubmit="window.close();">
+         <input type="submit" id="logout" class="disconnectInput" name="logout" value=" ↩️Déconnexion">
+        </form>
 
         <div class="modal" role="dialog" id="my_modal_8">
           <div class="modal-box">

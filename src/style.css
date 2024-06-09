@@ -254,3 +254,14 @@ padding: 15px;
 .unfoundedCode{
     display: none;
 }
+
+.disconnectInput{
+    position: relative;
+    left: 100px;
+    color: tomato;
+    background-color: aliceblue;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 1.2rem;
+    border-radius: 12px;
+}
