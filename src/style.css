@@ -228,3 +228,29 @@ padding: 15px;
     font-size: 1.3rem;
     font-weight: 900;    
 }
+
+#validSearch{
+    margin-top: 20px;
+    background-color: teal;
+    font-weight: 900;
+    font-size: 1.2rem;
+} 
+
+.foundedProdInfos{
+    padding: 10px;
+    text-align: left;
+    background-color: aliceblue;
+    color: black;
+    display: none;
+}
+
+.foundedProdInfos h2{
+    border: solid 3px teal;
+    font-size: 1.3rem;
+    font-weight: 900;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.unfoundedCode{
+    display: none;
+}

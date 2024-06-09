@@ -107,7 +107,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "npx tailwindcss -i ./src/style.css -o ./dist/style.css --watch"
+    "build:css": "npx tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
+    "server": "json-server -w ./Data/cargaisons.json"
   },
   "keywords": [],
   "author": "",

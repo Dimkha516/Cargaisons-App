@@ -990,11 +990,11 @@ addProdForm.addEventListener("submit", (e) => {
     }
     if (validnomClient &&
         validprenomClient &&
-        // validphoneClient &&
+        validphoneClient &&
         validadressClient &&
         validnomDestinataire &&
         validprenomDestinataire &&
-        // validtelDestinataire &&
+        validtelDestinataire &&
         validemailDestinataire &&
         validnombreColis &&
         validpoidsProduit &&
@@ -1014,6 +1014,8 @@ addProdForm.addEventListener("submit", (e) => {
             tel_client: phoneClient.value,
             adress_client: adressClient.value,
             email_client: emailClient.value,
+            nom_destinataire: nomDestinataire.value,
+            prenom_destinataire: prenomDestinataire.value,
             email_destinataire: emailDestinataire.value,
             tel_destinataire: telDestinataire.value,
         };

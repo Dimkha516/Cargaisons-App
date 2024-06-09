@@ -24,8 +24,8 @@
 
         <div class="clientSpace">
             <h1>👤 Espace Client</h1>
-            <h2>ENTREZ LE NUMÉRO DU COLIS....</h2>
-            <form class="flex items-center max-w-sm mx-auto">
+            <h2>ENTREZ LE NUMÉRO DU COLIS...</h2>
+            <form class="flex items-center max-w-sm mx-auto searchProdForm">
                 <div class="relative w-full">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -38,6 +38,7 @@
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="NUMÉRO COLIS..." />
                 </div>
+
                 <button type="submit"
                     class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -45,11 +46,23 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                     </svg>
-
-                </button>
+                </button>  
             </form>
-
-
+            <div class="searchError">
+                <span class="error unfoundedCode">Code Produit invalid!</span>
+            </div>
+            <div class="foundedProdInfos">
+            <h2 class="foundedProd-client"></h2> 
+            <h2 class="foundedProd-destinataire"></h2>
+            <h2 class="foundedProd-nombre"></h2>
+            <h2 class="foundedProd-poids"></h2>
+            <h2 class="foundedProd-montant"></h2>
+            <h2 class="foundedProd-voie"></h2>
+            <h2 class="foundedProd-etat"></h2>
+            <!-- <h3 class=""></h3>
+            <h3 class=""></h3>
+            <h3 class=""></h3> -->
+        </div>
         </div>
 
         <div class="adminSpace">
@@ -57,10 +70,10 @@
 
             <form action="" method="post" class="max-w-sm mx-auto">
                 <h1>🔏 Espace Administrateur</h1>
-                 <?php
-                    if(isset($_SESSION['emailPass-error'])){
-                        echo "<p class='error'>" . $_SESSION['emailPass-error'] . "</p>";
-                    }
+                <?php
+                if (isset($_SESSION['emailPass-error'])) {
+                    echo "<p class='error'>" . $_SESSION['emailPass-error'] . "</p>";
+                }
                 ?>
                 <div class="mb-5">
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Entrez
@@ -68,23 +81,23 @@
                     <input type="text" id="email" name="adminEmail"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="admin@compte.com" />
-                        <?php
-                            if(isset($_SESSION['email-error'])){
-                                echo "<p class='error'>". $_SESSION['email-error'] . "</p>";
-                            }
-                        ?>
+                    <?php
+                    if (isset($_SESSION['email-error'])) {
+                        echo "<p class='error'>" . $_SESSION['email-error'] . "</p>";
+                    }
+                    ?>
                 </div>
                 <div class="mb-5">
                     <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Entrez
                         Mot de passe</label>
                     <input type="password" id="password" name="adminPassword"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" />
-                        <?php
-                            if(isset($_SESSION['pass-error'])){
-                                echo "<p class='error'>" . $_SESSION['pass-error'] . "</p>";
-                            }
-                        ?>    
-                    </div>
+                    <?php
+                    if (isset($_SESSION['pass-error'])) {
+                        echo "<p class='error'>" . $_SESSION['pass-error'] . "</p>";
+                    }
+                    ?>
+                </div>
 
 
                 <button type="submit"
@@ -93,7 +106,7 @@
             </form>
         </div>
     </div>
-
+    <script type="module" src="../dist/client.js"></script>
 </body>
 
 </html>
