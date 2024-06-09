@@ -732,6 +732,7 @@ echo json_encode($result);
 
     <!---------------------------PAGINATION START------------------------------ -->
     <div class="join paginationDiv" style="position: relative; left: 70%">
+
       <!-- <button class="join-item btn">1</button>
       <button class="join-item btn btn-active">2</button>
       <button class="join-item btn">3</button>

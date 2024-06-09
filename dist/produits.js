@@ -221,41 +221,96 @@ function getStatusColor2(etat) {
             return "yellow";
     }
 }
+let currentPage2 = 1;
+const itemsPerPage2 = 3;
 async function displayData() {
     const data = await fetchProd();
     const tbody = document.querySelector(".allCargs");
     tbody.innerHTML = "";
     const filteredData = data.filter((item) => (item.etat !== 'archive' && item.etat !== 'perdu' && item.etat !== 'recupere'));
-    // data.forEach((item: any) => {
-    filteredData.forEach((item) => {
-        const statusColor = getStatusColor2(item.etat);
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <th>${item.code_colis}</th>
-            <th>${item.type_produit}</th>
-            <th>${item.poids} KG</th>
-            <th>${item.voie}</th>
-            <th>${item.prix} Francs</th>
-            <th>${item.nombre_produit}</th>
-            <th style="color: ${statusColor};font-size:1.5rem">${item.etat}</th>
-            <th>
-                <button class='editProdBtn' id=${item.id}>Éditer</button>
-                <input type='checkbox' id=${item.id} />
-            </th>
-        `;
-        tbody.appendChild(row);
-    });
-    //-------------------------------EVENEMENT AU CLIQUE SUR UN BOUTON EDITER POUR UPDATE PRODUIT: 
-    const editProdBtn = document.querySelectorAll(".editProdBtn");
-    editProdBtn.forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            const target = e.target;
-            my_modal_3.showModal();
-            updateProd(target.id);
-            // console.log(target.id);
-            // sendEmail(emailData);
+    function renderPage(page) {
+        tbody.innerHTML = "";
+        const start = (page - 1) * itemsPerPage2;
+        const end = start + itemsPerPage2;
+        const pageData = filteredData.slice(start, end);
+        pageData.forEach((item) => {
+            const statusColor = getStatusColor2(item.etat);
+            const row = document.createElement("tr");
+            row.innerHTML = `
+      <th>${item.code_colis}</th>
+        <th>${item.type_produit}</th>
+        <th>${item.poids} KG</th>
+        <th>${item.voie}</th>
+        <th>${item.prix} Francs</th>
+        <th>${item.nombre_produit}</th>
+        <th style="color: ${statusColor};font-size:1.5rem">${item.etat}</th>
+        <th>
+            <button class='editProdBtn' id=${item.id}>Éditer</button>
+            <input type='checkbox' id=${item.id} />
+        </th>
+      `;
+            tbody.appendChild(row);
         });
+        const editProdBtn = document.querySelectorAll(".editProdBtn");
+        editProdBtn.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const target = e.target;
+                my_modal_3.showModal();
+                updateProd(target.id);
+                // console.log(target.id);
+                // sendEmail(emailData);
+            });
+        });
+    }
+    renderPage(currentPage2);
+    const prevPageBtn = document.getElementById("prevPage");
+    const nextPageBtn = document.getElementById("nextPage");
+    const pageNumberSpan = document.getElementById("pageNumber");
+    prevPageBtn.addEventListener("click", () => {
+        if (currentPage2 > 1) {
+            currentPage2--;
+            renderPage(currentPage2);
+            pageNumberSpan.textContent = currentPage2.toString();
+        }
     });
+    nextPageBtn.addEventListener("click", () => {
+        if (currentPage2 * itemsPerPage2 < filteredData.length) {
+            currentPage2++;
+            renderPage(currentPage2);
+            pageNumberSpan.textContent = currentPage2.toString();
+        }
+    });
+    //   filteredData.forEach((item: any) => {
+    //   const statusColor = getStatusColor2(item.etat)
+    //   const row = document.createElement("tr") as HTMLTableRowElement;
+    //   row.innerHTML = `
+    //           <th>${item.code_colis}</th>
+    //           <th>${item.type_produit}</th>
+    //           <th>${item.poids} KG</th>
+    //           <th>${item.voie}</th>
+    //           <th>${item.prix} Francs</th>
+    //           <th>${item.nombre_produit}</th>
+    //           <th style="color: ${statusColor};font-size:1.5rem">${item.etat}</th>
+    //           <th>
+    //               <button class='editProdBtn' id=${item.id}>Éditer</button>
+    //               <input type='checkbox' id=${item.id} />
+    //           </th>
+    //       `;
+    //   tbody.appendChild(row);
+    // });
+    //-------------------------------EVENEMENT AU CLIQUE SUR UN BOUTON EDITER POUR UPDATE PRODUIT: 
+    // const editProdBtn = document.querySelectorAll(
+    //   ".editProdBtn"
+    // ) as NodeListOf<HTMLButtonElement>;
+    // editProdBtn.forEach((btn) => {
+    //   btn.addEventListener("click", (e) => {
+    //     const target = e.target as HTMLElement;
+    //     my_modal_3.showModal();
+    //     updateProd(target.id);
+    //     // console.log(target.id);
+    //     // sendEmail(emailData);
+    //   }); 
+    // });
 }
 displayData();
 //-----------------------------------------AFFICHAGE COLIS PAR TYPESCRIPT AVEC PAGINATION FIN--------------------------
